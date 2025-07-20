@@ -56,9 +56,7 @@ const activeTab = ref('my submission')
 
 const links: LinkProp[] = [
   { title: 'My Submission', label: '1', icon: File, variant: 'default' },
-  { title: 'Review', label: '0', icon: FileSearch, variant: 'ghost' },
-  { title: 'Editor', label: '0', icon: FileCog, variant: 'ghost' },
-  { title: 'Contributor', label: '23', icon: User, variant: 'ghost' },
+  { title: 'Contributor', label: '1', icon: User, variant: 'ghost' },
 ]
 const isLoading = ref(false)
 
@@ -167,6 +165,8 @@ function onExpand() {
               </span>
       <!-- Status Badge -->
              <BaseBadgeStatus :status="participant?.submission?.status ?? 'draft'" />
+
+            <button @click="submissionStore.fetchDetail()" class="ring-1 ring-red-400 py-1 px-2 rounded-2 text-sm text-red-500"><i :class="submissionStore.isLoading ? 'fa-spin':''" class="fal fa-refresh text-red-400"></i> Refresh</button> 
 
           </div>
           </div>

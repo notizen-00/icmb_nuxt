@@ -1,38 +1,45 @@
-// stores/Submission.ts
+// stores/Discussion.ts
 import { defineStore } from 'pinia'
 import { toast } from 'vue3-toastify'
 
 
-export const useSubmissionStore = defineStore('Submission', {
+export const useDiscussionStore = defineStore('Discussion', {
   state: () => ({
-    Submission: {} as any,
-    detailSubmission:{} as any,
+    Discussion: {} as any,
+    detailDiscussion:{} as any,
     isLoading: false,
+    isDialog:false,
     error: null as string | null,
   }),
 
   actions: {
     loadFromCache() {
-      const cached = localStorage.getItem('Submission')
+      const cached = localStorage.getItem('Discussion')
       if (cached) {
-        this.Submission = JSON.parse(cached)
+        this.Discussion = JSON.parse(cached)
       }
     },
 
-   async doSubmission(){
+    toggleDialog()
+    {
+        this.isDialog = !this.isDialog
+    },
+
+   async create(form:any){
 
       const config = useRuntimeConfig()
       const baseUrl = config.public.apiBaseUrl
       const { token } = useAuth()
-
+    console.log(form);
       this.isLoading = true
       this.error = null
 
       try {
         const { data, error } = await useFetch<any>(
-          `${baseUrl}/submission/submit`,
+          `${baseUrl}/discussion/store`,
           {
-            method: 'GET',
+            method: 'POST',
+            body:form,
             headers: {
               Authorization: `Bearer ${token.value}`,
               Accept: 'application/json',
@@ -41,13 +48,21 @@ export const useSubmissionStore = defineStore('Submission', {
         )
 
         if (error.value) throw new Error(error.value.message)
+        
+        this.isLoading = false
+        this.isDialog = false
 
+        await this.fetchDetail(form.submission_id);
 
-        // localStorage.setItem('Submission', JSON.stringify(this.Submission))
+        toast.success('Berhasil menambhakan diskusi');
+        
+
+        // localStorage.setItem('Discussion', JSON.stringify(this.Discussion))
       } catch (err: any) {
-        this.error = err.message || 'Failed to fetch Submissions'
+        this.error = err.message || 'Failed to fetch Discussions'
       } finally {
         this.isLoading = false
+         this.isDialog = false
       }
       
     },
@@ -90,14 +105,14 @@ export const useSubmissionStore = defineStore('Submission', {
         if (error.value) throw new Error(error.value.message)
 
 
-        // localStorage.setItem('Submission', JSON.stringify(this.Submission))
+        // localStorage.setItem('Discussion', JSON.stringify(this.Discussion))
       } catch (err: any) {
-        this.error = err.message || 'Failed to fetch Submissions'
+        this.error = err.message || 'Failed to fetch Discussions'
       } finally {
         this.isLoading = false
       }
     },
-    async fetchDetail(){
+    async fetchDetail(submission_id:any){
       const config = useRuntimeConfig()
       const baseUrl = config.public.apiBaseUrl
       const { token } = useAuth()
@@ -107,7 +122,7 @@ export const useSubmissionStore = defineStore('Submission', {
 
       try {
         const { data, error } = await useFetch<any>(
-          `${baseUrl}/submission/detail`,
+          `${baseUrl}/discussion/${submission_id}`,
           {
             method: 'GET',
             headers: {
@@ -119,17 +134,12 @@ export const useSubmissionStore = defineStore('Submission', {
 
         if (error.value) throw new Error(error.value.message)
 
-        this.detailSubmission = data.value
-
-        const discussionStore = useDiscussionStore()
-
-        discussionStore.fetchDetail(this.detailSubmission.submission_internal.id);
-        // localStorage.setItem('Submission', JSON.stringify(this.Submission))
+        this.detailDiscussion = data.value
+        // localStorage.setItem('Discussion', JSON.stringify(this.Discussion))
       } catch (err: any) {
-        this.error = err.message || 'Failed to fetch Submissions'
+        this.error = err.message || 'Failed to fetch Discussions'
       } finally {
         this.isLoading = false
-        toast.success('Berhasil load data submission')
       }
     },
 

@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     isEnabled: true,
     disableServerSideAuth: false,
     // baseURL: 'http://unej-be.test/',
-    baseURL: 'https://conference.feb.unej.ac.id/',
+    baseURL: 'http://icmb-app.test/',
     provider: { type:'local',
     pages: {
         login: '/login'
