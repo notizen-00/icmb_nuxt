@@ -1,16 +1,11 @@
 <template>
   <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded-lg w-full max-w-xl p-6 space-y-4">
-        <div class="flex justify-between">
-             <h2 class="text-lg font-semibold">Add Discussion {{ stage }}</h2>
-
-             <i class="fal fa-close cursor-pointer" @click="discussionStore.toggleDialog()"></i>
-        </div>
-     
+      <h2 class="text-lg font-semibold">Add Note Discussion {{ stage }}</h2>
 
       <form @submit.prevent="submitDiscussion" class="space-y-4">
         <div>
-          <label class="block font-medium mb-1">Discussion Name</label>
+          <label class="block font-medium mb-1">Note</label>
           <input type="text" v-model="form.discussion_name" required
                  class="w-full border rounded px-3 py-2 bg-gray-50 dark:bg-gray-700 text-black dark:text-white" />
         </div>
@@ -24,7 +19,7 @@
         <div class="flex space-x-4">
           <button type="submit"
                   class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Create Discussion
+            Send Note
           </button>
         </div>
       </form>
@@ -45,7 +40,9 @@ const props = defineProps({
 const discussionStore = useDiscussionStore();
 const emits = defineEmits(['close', 'submitted'])
 
-const isOpen = ref(discussionStore.isDialog)
+
+
+const isOpen = ref(discussionStore.isDialogNote)
 const error = ref('')
 const form = reactive({
   discussion_name: '',

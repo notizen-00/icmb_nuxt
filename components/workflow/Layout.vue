@@ -28,7 +28,7 @@ watch(stageTabs, (tabs) => {
   if (firstActive) {
     activeTab.value = firstActive.label
   } else if (tabs.length > 0) {
-    activeTab.value = tabs[0].label // Fallback: pilih tab pertama kalau tidak ada yang aktif
+    activeTab.value = tabs[0].label 
   }
 }, { immediate: true })
 
@@ -38,6 +38,6 @@ const currentComponent = computed(() => {
     Review,
     Copyediting,
     Production
-  }[activeTab.value] || Submission // Fallback: jangan blank, pakai Submission
+  }[activeTab.value] || Submission 
 })
 </script>

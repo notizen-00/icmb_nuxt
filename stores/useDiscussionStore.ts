@@ -9,6 +9,7 @@ export const useDiscussionStore = defineStore('Discussion', {
     detailDiscussion:{} as any,
     isLoading: false,
     isDialog:false,
+    isDialogNote:false,
     error: null as string | null,
   }),
 
@@ -23,6 +24,11 @@ export const useDiscussionStore = defineStore('Discussion', {
     toggleDialog()
     {
         this.isDialog = !this.isDialog
+    },
+
+     toggleDialogNote()
+    {
+        this.isDialogNote = !this.isDialogNote
     },
 
    async create(form:any){

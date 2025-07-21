@@ -8,6 +8,7 @@ export const useSubmissionStore = defineStore('Submission', {
     Submission: {} as any,
     detailSubmission:{} as any,
     isLoading: false,
+    isDialogRevision:false,
     error: null as string | null,
   }),
 
@@ -17,6 +18,11 @@ export const useSubmissionStore = defineStore('Submission', {
       if (cached) {
         this.Submission = JSON.parse(cached)
       }
+    },
+
+    toggleDialogRevision()
+    {
+      this.isDialogRevision = !this.isDialogRevision
     },
 
    async doSubmission(){
@@ -51,6 +57,41 @@ export const useSubmissionStore = defineStore('Submission', {
       }
       
     },
+    async uploadRevisi(formdata:any){
+
+       const config = useRuntimeConfig()
+      const baseUrl = config.public.apiBaseUrl
+      const { token } = useAuth()
+
+      this.isLoading = true
+      this.error = null
+
+      // alert(formData);
+
+      try {
+        const { data, error } = await useFetch<any>(
+          `${baseUrl}/submission/upload-file`,
+          {
+            method: 'POST',
+            body:formdata,
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+              Accept: 'application/json',
+            },
+          }
+        )
+
+        if (error.value) throw new Error(error.value.message)
+
+
+        // localStorage.setItem('Submission', JSON.stringify(this.Submission))
+      } catch (err: any) {
+        this.error = err.message || 'Failed to upload  Submissions'
+      } finally {
+        this.isLoading = false
+      }
+
+    },  
 
     async updatePublication(formData:any){
       const config = useRuntimeConfig()

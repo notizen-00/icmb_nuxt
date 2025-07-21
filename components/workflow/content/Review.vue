@@ -1,5 +1,6 @@
 <script setup>
 
+
 const submissionStore = useSubmissionStore()
 const discussionStore = useDiscussionStore();
 const showModal = ref(discussionStore.isLoading);
@@ -10,6 +11,11 @@ function onDiscussionAdded(discussion) {
   console.log('Discussion added', discussion)
   // lakukan refresh list or push ke array
 }
+
+const revisionFiles = computed(() => 
+  (submissionStore.detailSubmission?.submission_files?.items || [])
+    .filter(item => item.fileStage === 15)
+);
 
 
 const activeStage = computed(() => {
@@ -55,13 +61,46 @@ const {data} = useAuth()
     <div class="mb-6">
       <div class="flex justify-between">
         <h3 class="font-semibold text-lg mb-2">Revisions</h3>
-        <button @click.prevent="" class="ring-1 ring-blue-400 py-1 px-2 rounded-3 text-blue hover:bg-blue-700 hover:text-white">
+        <button @click.prevent="submissionStore.toggleDialogRevision()" class="ring-1 ring-blue-400 py-1 px-2 rounded-3 text-blue hover:bg-blue-700 hover:text-white">
           Upload File
         </button>
       </div>
       
       <div class="flex items-center item-center mx-5">
-           <div class="italic text-gray-500 my-20 flex text-center w-full justify-center items-center">No Files</div>
+           <ul
+      v-if="revisionFiles.length"
+      class="mb-6 w-full divide-y border rounded mt-10"
+    >
+      <li
+        v-for="file in revisionFiles"
+        :key="file.filesId"
+        class="flex items-center justify-between p-3"
+      >
+        <a
+          class="text-blue-600 underline"
+          target="_blank"
+          :href="file.url"
+        >
+          {{ file.name?.en || 'Untitled' }}
+        </a>
+        <div class="flex items-center space-x-3">
+          <span class="text-sm text-pink-600">
+            {{ formatDate(file.createdAt) }}
+          </span>
+          <span class="ring-1 ring-red-300 py-1 px-2 rounded-lg text-xs text-red">
+            Revision File
+          </span>
+          <span
+            v-if="file.genreName?.en"
+            class="ring rounded-2 py-1 px-2 text-xs ring-blue-300"
+          >
+            {{ file.genreName.en }}
+          </span>
+        </div>
+      </li>
+    </ul>
+
+           <div v-else class="italic text-gray-500 my-20 flex text-center w-full justify-center items-center">No Files</div>
       </div>
     </div>
 
@@ -90,7 +129,14 @@ const {data} = useAuth()
             <td class="px-4 py-2">{{ formatDate(i.created_at) }}</td>
             <td class="px-4 py-2">
               <div v-if="i.owner_id == data.id">
-                <button><i class="fal fa-trash text-red"></i></button>
+                <button class="mr-2 "><i class="fal fa-trash text-red"></i></button>
+                <button class="mr-2"><i class="fal fa-eye text-blue-200"></i></button>
+                <button><i class="fal fa-paper-plane text-blue-400"></i></button>
+              </div>
+              <div v-else>
+                 <button class="mr-2"><i class="fal fa-eye text-blue-200"></i></button>
+                <button><i class="fal fa-paper-plane text-blue-400"></i></button>
+                
               </div>
             </td>
           </tr>
@@ -101,6 +147,15 @@ const {data} = useAuth()
 
   <WorkflowDialogAddDiscussion
     v-if="discussionStore.isDialog"
+    :submissionId="submission.id"
+    :teamId="submission.team_id"
+    stage="review"
+    @close="showModal = false"
+    @submitted="onDiscussionAdded"
+  />
+
+  <WorkflowDialogUploadRevision
+    v-if="submissionStore.isDialogRevision"
     :submissionId="submission.id"
     :teamId="submission.team_id"
     stage="review"
