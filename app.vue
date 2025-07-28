@@ -29,6 +29,15 @@ useHead({
   { rel: 'stylesheet', href: 'https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css' },
   { rel: 'stylesheet', href: 'https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css' },
   ],
+  script: [
+
+        {
+          src: 'https://app.sandbox.midtrans.com/snap/snap.js',
+          async: true,
+          "data-client-key":"SB-Mid-client-Wg5leIiJk3ql0n75"
+
+        },
+      ],
   htmlAttrs: {
     lang: 'en',
   },
@@ -38,15 +47,15 @@ useHead({
   },
 })
 
-const title = 'Nuxt Shadcn UI - Dashboard Template'
-const description = 'This dashboard, built with Nuxt, Shadcn UI, and UnoCSS. It includes a dark mode toggle and is optimized for performance and data efficiency.'
+const title = 'ICMB-APP '
+const description = 'Dengan antarmuka yang ramah pengguna dan sistem yang aman, Conference International membantu Anda fokus pada yang terpenting: konten dan koneksi. Cocok untuk seminar ilmiah, simposium, webinar, hingga forum global.'
 
 useSeoMeta({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
-  ogUrl: 'https://dashboard.dianprata.com',
+  ogUrl: 'https://conference.feb.unej.ac.id',
   ogImage: 'https://nuxt-shadcn-dashboard.vercel.app/social-card.png',
   twitterTitle: title,
   twitterDescription: description,

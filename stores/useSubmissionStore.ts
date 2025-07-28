@@ -24,6 +24,10 @@ export const useSubmissionStore = defineStore('Submission', {
     {
       this.isDialogRevision = !this.isDialogRevision
     },
+    reset()
+    {
+      this.$reset();
+    },
 
    async doSubmission(){
 
@@ -47,7 +51,6 @@ export const useSubmissionStore = defineStore('Submission', {
         )
 
         if (error.value) throw new Error(error.value.message)
-
 
         // localStorage.setItem('Submission', JSON.stringify(this.Submission))
       } catch (err: any) {

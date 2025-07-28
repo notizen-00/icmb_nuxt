@@ -12,6 +12,8 @@ const { signOut,data } = useAuth()
 const { isMobile, setOpenMobile } = useSidebar()
 
 function handleLogout() {
+    useSubmissionStore().reset()
+    // usePembayaranStore().$reset()
   signOut({ callbackUrl: '/login' })
 }
 

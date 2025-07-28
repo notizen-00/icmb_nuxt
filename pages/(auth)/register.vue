@@ -4,52 +4,30 @@ definePageMeta({
   layout: 'blank',
 })
 
-const conferenceTypestore = useConferenceTypeStore()
-const conferenceStore = useConferenceStore()
-conferenceTypestore.fetch()
-conferenceStore.fetch()
-
-// Form model
-const conferenceType = ref('')
-const title = ref('')
+const name = ref('')
 const email = ref('')
-const correspondingAuthor = ref('')
-const authors = ref('')
 const affiliation = ref('')
-const teamId = ref('')
+const password = ref('')
 const contact = ref('')
-const manuscript = ref<File | null>(null)
-      
+const confirm_password = ref('')
+const error = ref('')
+const success = ref(false)
 
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
-// Handle file input
-function onFileChange(e: Event) {
-  const files = (e.target as HTMLInputElement).files
-  if (files && files.length > 0) {
-    manuscript.value = files[0]
-  }
-}
-
-// Handle submit
 async function handleSubmit() {
-  if (!manuscript.value) {
-    alert('Please upload your manuscript file before submitting.')
-    return
-  }
-
   const formData = new FormData()
-  formData.append('title', title.value)
+  formData.append('name', name.value)
   formData.append('email', email.value)
-  formData.append('corresponding_author', correspondingAuthor.value)
-  formData.append('conference_type_id', conferenceType.value) 
   formData.append('affiliation', affiliation.value)
-  formData.append('team_id', teamId.value)
-  formData.append('contact', contact.value)
-  formData.append('manuscript', manuscript.value)
+  formData.append('password', password.value)
+  formData.append('contact',contact.value)
+  formData.append('confirm_password', confirm_password.value)
 
   const config = useRuntimeConfig()
   const baseUrl = config.public.apiBaseUrl
-  console.log(formData);
+
   try {
     const response = await fetch(`${baseUrl}/register-manuscript`, {
       method: 'POST',
@@ -59,28 +37,26 @@ async function handleSubmit() {
     const result = await response.json()
 
     if (!response.ok) {
-      throw new Error(result?.message || 'Submission failed')
+      error.value = result.errors
+      return
     }
 
+    success.value = true
     alert('Registration successful!')
+    error.value = ''
 
-    // Reset form fields
-    conferenceType.value = ''
-    title.value = ''
+    // Clear input
     email.value = ''
-    correspondingAuthor.value = ''
-    authors.value = ''
+    password.value = ''
+    confirm_password.value= ''
     affiliation.value = ''
-    teamId.value = ''
+    name.value = ''
     contact.value = ''
-    manuscript.value = null
-
   } catch (error: any) {
     console.error('Form submission error:', error)
-    alert(error.message || 'Failed to submit form.')
+    error.value = error
   }
 }
-
 </script>
 
 <template>
@@ -89,70 +65,28 @@ async function handleSubmit() {
       <div class="max-w-3xl w-full mx-auto">
         <div class="text-center mb-8 space-y-2">
           <h1 class="text-3xl font-bold tracking-tight text-white">Register Online</h1>
-          <p class="text-sm text-gray-400">
-            Please complete the form below to submit your manuscript
-          </p>
+          <p class="text-sm text-gray-400">Please complete the form below !</p>
+        </div>
+
+        <div v-if="error && typeof error === 'object'" class="bg-red-50 text-red-700 p-4 rounded mb-4">
+          <p class="font-semibold">Please fix the following:</p>
+          <ul class="list-disc ml-5">
+            <li v-for="(msgs, field) in error" :key="field">
+              <strong>{{ field }}:</strong> {{ msgs.join(', ') }}
+            </li>
+          </ul>
+        </div>
+
+        <div v-if="success" class="bg-green-50 text-green-700 p-4 rounded mb-4">
+          <p class="font-semibold">Register Success</p>
+          Please wait manuscript verification from admin and check email !
         </div>
 
         <form @submit.prevent="handleSubmit" class="grid gap-6 bg-zinc-900 p-6 rounded-xl shadow-md">
-          <!-- Participation -->
-
-          <div>
-            <label class="block text-sm font-medium text-white mb-1">
-              Conference 
-            </label>
-            <select
-              v-model="teamId"
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option disabled value="">Select a conference </option>
-              <option
-                v-for="type in conferenceStore.conferences"
-                :key="type.id"
-                :value="type.id"
-              >
-                {{ type.name  }}
-              </option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-white mb-1">
-              Form of Presenter's Participation
-            </label>
-            <select
-              v-model="conferenceType"
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option disabled value="">Select a participation type</option>
-              <option
-                v-for="type in conferenceTypestore.ConferenceTypes"
-                :key="type.id"
-                :value="type.id"
-              >
-                {{ type.name }} / {{ formatCurrency(type.price) }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Title -->
-          <div>
-            <label class="block text-sm font-medium text-white mb-1">
-              Manuscript Title
-            </label>
-            <input
-              v-model="title"
-              type="text"
-              placeholder="Please write the title in sentence case style."
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <!-- Email & Author -->
+          <!-- Email & Full Name -->
           <div class="grid md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-white mb-1">
-                Corresponding E-mail
-              </label>
+              <label class="block text-sm font-medium text-white mb-1">E-mail</label>
               <input
                 v-model="email"
                 type="email"
@@ -161,11 +95,9 @@ async function handleSubmit() {
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-white mb-1">
-                Corresponding Author
-              </label>
+              <label class="block text-sm font-medium text-white mb-1">Full Name</label>
               <input
-                v-model="correspondingAuthor"
+                v-model="name"
                 type="text"
                 class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -174,25 +106,19 @@ async function handleSubmit() {
 
           <!-- Affiliation -->
           <div>
-            <label class="block text-sm font-medium text-white mb-1">
-              Affiliation
-            </label>
+            <label class="block text-sm font-medium text-white mb-1">Affiliation</label>
             <input
               v-model="affiliation"
               type="text"
               placeholder="Include code numbers to match authors above"
               class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p class="text-xs text-gray-400 mt-1">
-              Give a code number to the different affiliates...
-            </p>
+            <p class="text-xs text-gray-400 mt-1">Give a code number to the different affiliates...</p>
           </div>
 
           <!-- Contact -->
           <div>
-            <label class="block text-sm font-medium text-white mb-1">
-              Contact (WhatsApp installed)
-            </label>
+            <label class="block text-sm font-medium text-white mb-1">Contact (WhatsApp installed)</label>
             <input
               v-model="contact"
               type="text"
@@ -200,20 +126,40 @@ async function handleSubmit() {
             />
           </div>
 
-          <!-- Manuscript Upload -->
-          <div>
-            <label class="block text-sm font-medium text-white mb-1">
-              Manuscript
-            </label>
+          <!-- Password -->
+          <div class="relative">
+            <label class="block text-sm font-medium text-white mb-1">Password</label>
             <input
-              type="file"
-              accept=".doc,.docx"
-              @change="onFileChange"
-              class="block w-full text-sm text-white file:text-white file:bg-blue-700 file:border-0 file:px-4 file:py-2 file:rounded-lg file:cursor-pointer bg-black border border-gray-700 rounded-lg focus:outline-none"
+              :type="showPassword ? 'text' : 'password'"
+              v-model="password"
+              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p class="text-xs text-gray-400 mt-1">
-              Upload manuscript in Word format (.doc / .docx)
-            </p>
+            <button
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-white"
+            >
+              <span v-if="showPassword" class="mt-4 pt-2"><i class="fal fa-eye"></i></span>
+              <span v-else class="mt-4 pt-2"><i class="fal fa-eye-slash"></i></span>
+            </button>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="relative">
+            <label class="block text-sm font-medium text-white mb-1">Confirm Password</label>
+            <input
+              :type="showConfirmPassword ? 'text' : 'password'"
+              v-model="confirm_password"
+              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              @click="showConfirmPassword = !showConfirmPassword"
+              class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-white"
+            >
+              <span v-if="showConfirmPassword" class="mt-4 pt-2"><i class="fal fa-eye"></i></span>
+              <span class="mt-4 pt-2" v-else><i class="fal fa-eye-slash"></i></span>
+            </button>
           </div>
 
           <!-- Submit Button -->
