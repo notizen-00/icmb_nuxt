@@ -7,8 +7,11 @@ export const useSubmissionStore = defineStore('Submission', {
   state: () => ({
     Submission: {} as any,
     detailSubmission:{} as any,
+    participant:[] as any,
     isLoading: false,
+    isLoadingAbstract:false,
     isDialogRevision:false,
+    isDialogAbstract:false,
     error: null as string | null,
   }),
 
@@ -23,6 +26,10 @@ export const useSubmissionStore = defineStore('Submission', {
     toggleDialogRevision()
     {
       this.isDialogRevision = !this.isDialogRevision
+    },
+        toggleDialogAbstract()
+    {
+      this.isDialogAbstract = !this.isDialogAbstract
     },
     reset()
     {
@@ -141,6 +148,39 @@ export const useSubmissionStore = defineStore('Submission', {
         this.isLoading = false
       }
     },
+
+    async fetchAbstract()
+    {
+      const config = useRuntimeConfig()
+      const baseUrl = config.public.apiBaseUrl
+      const { token } = useAuth()
+
+      this.isLoading = true
+      this.error = null
+
+      try {
+        const { data, error } = await useFetch<any>(
+          `${baseUrl}/submission`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+              Accept: 'application/json',
+            },
+          }
+        )
+
+        if (error.value) throw new Error(error.value.message)
+
+        this.participant = data.value
+        // localStorage.setItem('Submission', JSON.stringify(this.Submission))
+      } catch (err: any) {
+        this.error = err.message || 'Failed to fetch Submissions'
+      } finally {
+        this.isLoading = false
+        // toast.success('Berhasil load data submission')
+      }
+    },
     async fetchDetail(){
       const config = useRuntimeConfig()
       const baseUrl = config.public.apiBaseUrl
@@ -173,7 +213,7 @@ export const useSubmissionStore = defineStore('Submission', {
         this.error = err.message || 'Failed to fetch Submissions'
       } finally {
         this.isLoading = false
-        toast.success('Berhasil load data submission')
+        // toast.success('Berhasil load data submission')
       }
     },
 

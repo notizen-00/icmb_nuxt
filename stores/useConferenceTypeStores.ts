@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { ConferenceType } from '~/types/conference-type'
 export const useConferenceTypeStore = defineStore('conferenceType', {
   state: () => ({
-    ConferenceTypes: [] as ConferenceType[],
+    ConferenceTypes: [] as any[],
     ConferenceType:{} as ConferenceType | {} | null ,
     products:[] as any[],
     isLoading: false,
@@ -10,15 +10,20 @@ export const useConferenceTypeStore = defineStore('conferenceType', {
   }),
 
   actions: {
-    async fetch() {
+    async fetch(id:string) {
   const config = useRuntimeConfig()
   const baseUrl = config.public.apiBaseUrl
-  
+      const { token } = useAuth()
+
   this.isLoading = true
   this.error = null
 
   try {
-    const { data, error } = await useFetch<ConferenceType[]>(`${baseUrl}/conference-type`)
+    const { data, error } = await useFetch<ConferenceType[]>(`${baseUrl}/conference-type/${id}`,{method: 'GET',
+       headers: {
+         'Content-Type': 'application/json',
+         Authorization: `Bearer ${token.value}` 
+       }})
 
     if (error.value) {
       throw new Error(error.value.message)
@@ -26,7 +31,9 @@ export const useConferenceTypeStore = defineStore('conferenceType', {
 
     const responseData = data.value || []
     console.log(responseData)
+    
     this.ConferenceTypes = responseData
+    return responseData;
   
 
   } catch (err: any) {

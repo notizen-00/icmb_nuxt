@@ -42,7 +42,10 @@ async function handleSubmit() {
     }
 
     success.value = true
+    
     alert('Registration successful!')
+    window.location.href = '/login'
+    
     error.value = ''
 
     // Clear input
@@ -79,7 +82,7 @@ async function handleSubmit() {
 
         <div v-if="success" class="bg-green-50 text-green-700 p-4 rounded mb-4">
           <p class="font-semibold">Register Success</p>
-          Please wait manuscript verification from admin and check email !
+          Account Registered !
         </div>
 
         <form @submit.prevent="handleSubmit" class="grid gap-6 bg-zinc-900 p-6 rounded-xl shadow-md">

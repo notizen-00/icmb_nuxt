@@ -48,13 +48,13 @@ const activeTeam = ref(props.teams[0])
             <NuxtLoadingIndicator v-if="isLoading"></NuxtLoadingIndicator>
             <div v-else class="grid flex-1 text-left text-sm leading-tight">
             <span class="truncate font-semibold">
-              {{ participantStore.detailParticipant?.team?.[0]?.name || '-' }}
+              {{ participantStore.detailParticipant?.team?.[0]?.name || 'No Conference' }}
             </span>
             <span
               class="inline-flex items-center gap-1 rounded bg-blue-500/10 text-blue-600 text-[11px] font-medium px-1.5 py-0.5"
             >
               <Icon name="i-lucide-award" class="size-3 text-blue-600" />
-              {{ participantStore.detailParticipant?.participant?.[0]?.conference_type?.name || '-' }}
+              {{ participantStore.detailParticipant?.participant?.[0]?.conference_type?.name || 'No Conference Type' }}
             </span>
 
 

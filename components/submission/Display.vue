@@ -5,14 +5,14 @@ import { Archive, ArchiveX, ArrowLeft, Clock, Forward, MoreVertical, Reply, Repl
 import { computed } from 'vue'
 import type { Participant } from '~/interfaces/participant/Participant.js'
 
-
-
-
 interface SubmissionDisplayProps {
-  participant: Participant | undefined
+  participant: any | undefined
 }
 
+
 const props = defineProps<SubmissionDisplayProps>()
+
+console.log(props.participant)
 
 const emit = defineEmits(['close'])
 
@@ -179,10 +179,9 @@ const today = new Date()
               {{ participant.corresponding_author?.slice(0, 3).toUpperCase() }}
             </AvatarFallback>
         </Avatar>
-
           <div class="grid gap-1">
             <div class="font-semibold">
-           {{ participant.manuscript_title }}
+            {{ participant.manuscript_title }}
             </div>
             <div class="line-clamp-1 text-xs">
               {{ participant.corresponding_author }}
@@ -196,8 +195,6 @@ const today = new Date()
           {{ format(new Date(participant.created_at), "PPpp") }}
         </div>
       </div>
-
-     
       <Separator />
       <div class="flex-1 whitespace-pre-wrap p-4 text-sm">
         {{ participant.manuscript_title }}

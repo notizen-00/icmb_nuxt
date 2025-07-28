@@ -1,8 +1,5 @@
 <script setup>
 
-onMounted(()=>{
-    alert('hi')
-})
 </script>
 <template>
 

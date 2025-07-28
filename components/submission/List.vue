@@ -1,20 +1,18 @@
 <script lang="ts" setup>
-import type { Submission } from './data/submission.ts'
 import { cn } from '@/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
-import type { Participant } from '~/interfaces/participant/Participant.js'
-import type { UserParticipant } from '~/interfaces/participant/User.js'
 
-interface SubmissionListProps {
-  item: UserParticipant 
+interface AbstractListProps {
+  items: any[]
 }
 
-const props = defineProps<SubmissionListProps>()
-const selectedSubmission = defineModel<string>('selectedSubmission', { required: false })
+const props = defineProps<AbstractListProps>()
+console.log(props.items);
+const selectedSubmissionData = defineModel<string>('selectedSubmissionData', { required: false })
 
-function getBadgeVariantFromLabel(label: string) {
-  if (['work'].includes(label.toLowerCase())) return 'default'
-  if (['personal'].includes(label.toLowerCase())) return 'outline'
+function getBadgeVariantFromLabel(label:boolean) {
+  if (!label) return 'default'
+  if (label) return 'outline'
   return 'secondary'
 }
 </script>
@@ -22,47 +20,62 @@ function getBadgeVariantFromLabel(label: string) {
 <template>
   <ScrollArea class="h-[calc(100dvh-72px-56px-3rem-53px)] flex">
     <div class="flex flex-1 flex-col gap-2 p-4 pt-0">
-      <button
-        :class="cn(
-          'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-          selectedSubmission === item.participant[0].id.toString() && 'bg-muted',
-        )"
-        @click="selectedSubmission = item.participant[0].id.toString()"
-      >
-      <div class="flex"><i class="fal fa-file"></i></div>
-        <div class="w-full flex flex-col gap-1">
-          
-          <div class="flex items-center">
-            
-            <div class="flex items-center gap-2">
-              <div class="font-semibold">  Manuscript Title : {{ item.participant[0].manuscript_title }}</div>
-              <span v-if="!item.is_admin" class="h-2 w-2 flex rounded-full bg-blue-600" />
+      <TransitionGroup name="list" appear v-if="items.length > 0">
+        <button
+          v-for="item in items"
+          :key="item.id"
+          :class="cn(
+            'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
+            selectedSubmissionData === item.id && 'bg-muted',
+          )"
+          @click="selectedSubmissionData = item.id.toString()"
+        >
+          <div class="w-full flex flex-col gap-1">
+            <div class="flex items-center">
+              <div class="flex items-center gap-2">
+                <div class="font-semibold">
+                  {{ item.manuscript_title }}
+                </div>
+                <!-- <span
+                  v-if="!item.read"
+                  class="h-2 w-2 flex rounded-full bg-blue-600"
+                /> -->
+              </div>
+              <div
+                :class="cn(
+                  'ml-auto text-xs',
+                  selectedSubmissionData === item.id ? 'text-foreground' : 'text-muted-foreground',
+                )"
+              >
+                {{ formatDistanceToNow(new Date(item.created_at), { addSuffix: true }) }}
+              </div>
             </div>
-            <div
-              :class="cn(
-                'ml-auto text-xs',
-                selectedSubmission === item.participant[0].id.toString()
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
-              )"
-            >
-              {{ formatDistanceToNow(new Date(item.created_at), { addSuffix: true }) }}
+
+            <div class="text-xs font-medium">
+              {{ item.manusript_title }}
             </div>
           </div>
+          <div class="line-clamp-2 text-xs text-muted-foreground">
+            {{ item.corresponding_email.substring(0, 300) }}
+          </div>
+          <div class="flex items-center gap-2">
+            <Badge
+              :variant="getBadgeVariantFromLabel(item.status)"
+            >
+              {{ item.status }}
+            </Badge>
+          </div>
+        </button>
+      </TransitionGroup>
 
-          <div class="text-xs font-medium"><i class="fal fa-user-graduate mx-3"></i>{{ item.participant[0].corresponding_author }}</div>
+      <!-- Jangan pakai TransitionGroup untuk satu elemen statis -->
+      <div v-else class="text-muted-foreground text-sm py-4 text-center min-h-full mt-20 flex justify-center items-center">
+
+        <div class="mx-auto text-center">
+        <img src="/no-data.gif" width="200" height="100" class="mx-auto"></img><br></br>
+        No Abstract Submission Data.
         </div>
-        <div class="line-clamp-2 text-xs text-muted-foreground">{{ item.participant[0].affiliation.substring(0, 300) }}</div>
-        <div class="flex items-center gap-2">
-          <!-- <Badge
-            v-for="label of item.labels"
-            :key="label"
-            :variant="getBadgeVariantFromLabel(label)"
-          >
-            {{ label }}
-          </Badge> -->
-        </div>
-      </button>
+      </div>
     </div>
   </ScrollArea>
 </template>

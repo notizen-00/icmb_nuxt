@@ -6,10 +6,10 @@ const participantStore = useParticipantStore()
 const submissionStore = useSubmissionStore()
 
 
-onMounted(async()=>{
 
-  await submissionStore.fetchDetail();
-})
+submissionStore.fetchDetail();
+submissionStore.fetchAbstract();
+
 
 
 </script>
@@ -19,6 +19,7 @@ onMounted(async()=>{
     <SubmissionLayout
       :accounts="accounts"
       :participant="participantStore.detailParticipant"
+      :submission-participant="submissionStore.participant"
       :nav-collapsed-size="4"
     />
   </div>
