@@ -2,7 +2,14 @@
 import type { UserParticipant } from "@/interfaces/participant";
 import type { LinkProp } from "~/components/submission/Nav.vue";
 import { useMediaQuery } from "@vueuse/core";
-import { Search, File, FileSearch, FileCog, User } from "lucide-vue-next";
+import {
+  Search,
+  File,
+  FileSearch,
+  FileCog,
+  User,
+  Megaphone,
+} from "lucide-vue-next";
 import { ConfigProvider } from "radix-vue";
 import { cn } from "~/lib/utils";
 
@@ -46,6 +53,7 @@ const isCollapsed = ref(props.defaultCollapsed);
 const searchValue = ref("");
 const debouncedSearch = refDebounced(searchValue, 250);
 const selectedSubmission = ref<string | undefined>();
+
 const selectedSubmissionData = computed(() => {
   if (!props.submissionParticipant) return null;
   return (
@@ -55,14 +63,33 @@ const selectedSubmissionData = computed(() => {
   );
 });
 
+const filteredParticipantList = computed(() => {
+  let output: any[]
+  const searchValue = debouncedSearch.value?.trim() || ''
+  if (!searchValue) {
+    output = props.submissionParticipant
+  }
+
+  else {
+    output = props.submissionParticipant.filter((item:any) => {
+      return (item.manuscript_title ?? '').includes(debouncedSearch.value)
+        || (item.corresponding_email ?? '').includes(debouncedSearch.value)
+    })
+  }
+
+  return output
+})
+
+console.log(props.submissionParticipant)
+
 const submissionStore = useSubmissionStore();
-const activeTab = ref("my abstract submission");
+const activeTab = ref("my conference");
 
 const links: LinkProp[] = [
   {
-    title: "My Abstract Submission",
+    title: "My Conference",
     label: "1",
-    icon: File,
+    icon: Megaphone,
     varinat: "default",
   },
   { title: "My Submission", label: "2", icon: File, variant: "ghost" },
@@ -70,27 +97,23 @@ const links: LinkProp[] = [
 ];
 const isLoading = ref(false);
 
-const reviewerCount = computed(() => {
-  const participants =
-    submissionStore.detailSubmission?.submission_participant ?? [];
-  return participants.filter(
-    (participant: { user?: { access?: string } }) =>
-      participant.user?.access === "reviewer"
-  ).length;
-});
 
-// onMounted(async () => {
-//   isLoading.value = true
+const activeTypeTab = ref("Seminar Only");
 
-//   try {
-//     const submissionStore = useSubmissionStore()
-//     await submissionStore.fetchDetail()
-//   } catch (error) {
-//     console.error('Gagal memuat detail submission:', error)
-//   } finally {
-//     isLoading.value = false
-//   }
-// })
+const tabOptions = [
+  {
+    label: "Seminar Only",
+    isActiveStage: true,
+  },
+  {
+    label: "Author / Conference Presenter",
+    isActiveStage: true,
+  },
+];
+
+function onTabChange(newTab:any) {
+  activeTypeTab.value = newTab;
+}
 
 const defaultCollapse = useMediaQuery("(max-width: 768px)");
 
@@ -111,11 +134,11 @@ function onExpand() {
 </script>
 
 <template>
-     <SubmissionDisplay
-              v-if="selectedSubmissionData"
-              :participant="selectedSubmissionData"
-              @close="selectedSubmission = ''"
-            />
+  <SubmissionDisplay
+    v-if="selectedSubmissionData"
+    :participant="selectedSubmissionData"
+    @close="selectedSubmission = ''"
+  />
   <ConfigProvider :use-id="useIdFunction" v-else>
     <TooltipProvider :delay-duration="0">
       <ResizablePanelGroup
@@ -189,15 +212,10 @@ function onExpand() {
             :default-size="defaultLayout[1]"
             :min-size="30"
           >
-         
-
             <div>
-              <Tabs
-                v-if="activeTab === 'my abstract submission'"
-                default-value="all"
-              >
+              <Tabs v-if="activeTab === 'my conference'" default-value="all">
                 <div class="flex items-center px-4 py-2 overflow-y-auto">
-                  <h1 class="text-xl font-bold">List Abstract Submissions</h1>
+                  <h1 class="text-xl font-bold">My Conference</h1>
 
                   <div class="ml-auto flex items-center space-x-4">
                     <!-- Badge Reviewer -->
@@ -221,14 +239,29 @@ function onExpand() {
                   </div>
                 </div>
                 <Separator />
-                   <div class="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-              <form>
-                <div class="relative">
-                  <Search class="absolute left-2 top-2.5 size-4 text-muted-foreground" />
-                  <Input v-model="searchValue" placeholder="Search" class="pl-8" />
+                <div class="flex w-full justify-center">
+                  <BaseTab
+                    :tabs="tabOptions"
+                    :activeTab="activeTypeTab"
+                    @changeTab="onTabChange"
+                  ></BaseTab>
                 </div>
-              </form>
-            </div>
+                <div
+                  class="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+                >
+                  <form>
+                    <div class="relative">
+                      <Search
+                        class="absolute left-2 top-2.5 size-4 text-muted-foreground"
+                      />
+                      <Input
+                        v-model="searchValue"
+                        placeholder="Search"
+                        class="pl-8"
+                      />
+                    </div>
+                  </form>
+                </div>
                 <!--              
               <SubmissionFormPublication
                   v-if="participant?.submission?.status === 'incomplete'"
@@ -238,9 +271,8 @@ function onExpand() {
               <WorkflowLayout v-else /> -->
                 <SubmissionList
                   v-model:selected-submission-data="selectedSubmission"
-                  :items="submissionStore.participant"
+                  :items="filteredParticipantList"
                 ></SubmissionList>
-              
               </Tabs>
 
               <div v-else-if="activeTab === 'review'" class="p-4">

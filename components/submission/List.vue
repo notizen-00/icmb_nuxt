@@ -7,7 +7,7 @@ interface AbstractListProps {
 }
 
 const props = defineProps<AbstractListProps>()
-console.log(props.items);
+
 const selectedSubmissionData = defineModel<string>('selectedSubmissionData', { required: false })
 
 function getBadgeVariantFromLabel(label:boolean) {

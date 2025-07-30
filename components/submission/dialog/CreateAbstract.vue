@@ -10,6 +10,7 @@ conferenceStore.fetch()
 
 const {data} = useAuth()
 
+
 // Form model
 const conferenceType = ref('')
 const conferenceTypeList = ref<any>([])
@@ -20,9 +21,9 @@ const correspondingAuthor = ref(data.value?.name)
 const originParticipation = ref('')
 const formParticipation = ref('')
 const authors = ref<string[]>([])
-const affiliation = ref('')
+const affiliation = ref(data.value?.participant_detail.affiliation)
 const teamId = ref('')
-const contact = ref('')
+const contact = ref(data.value?.participant_detail.no_hp)
 const participant_type = ref('')
 const manuscript = ref<File | null>(null)
 const referalCode = ref('')
@@ -55,7 +56,6 @@ watch(conferenceType, (newId) => {
 })
 
 
-// Handle submit
 async function handleSubmit() {
 
  if(participant_type.value == 'presenter'){
@@ -71,9 +71,9 @@ async function handleSubmit() {
   formData.append('corresponding_email', email.value!)
   formData.append('corresponding_author', correspondingAuthor.value!)
   formData.append('conference_type_id', conferenceType.value) 
-  formData.append('affiliation', affiliation.value)
+  formData.append('affiliation', affiliation.value!)
   formData.append('team_id', teamId.value)
-  formData.append('contact', contact.value)
+  formData.append('contact', contact.value!)
   formData.append('referal_code',referalCode.value)
 
   authors.value.forEach((author: string) => {
@@ -147,13 +147,13 @@ async function handleSubmit() {
       <button
         class="ring-1 ring-blue-400 py-1 px-2 rounded-2 text-sm text-blue-500"
       >
-        <i class="fal fa-plus text-blue-400"></i>
-        New Abstract Submission 
+        <i class="fal fa-signal-stream text-blue-400"></i>
+        Join Conference 
       </button>
     </DialogTrigger>
     <DialogScrollContent class="sm:max-w-[700px] ">
       <DialogHeader>
-        <DialogTitle>Create New Abstract Submission </DialogTitle>
+        <DialogTitle><i class="fal fa-signal-stream fa-beat"></i> Join New Conference </DialogTitle>
         <DialogDescription>
           Make changes to your profile here. Click save when you're done.
         </DialogDescription>
@@ -221,14 +221,15 @@ async function handleSubmit() {
           </div>
           <div>
             <label class="block text-sm font-medium text-white mb-1">
-              Form of Submission
+              Conference Participation
             </label>
             <select
               v-model="conferenceType"
                 :disabled="!conferenceTypeList.length"
+                :class="!conferenceTypeList.length ? 'cursor-not-allowed':''"
               class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option disabled value="">Select a submission type</option>
+              <option disabled value="">Select a conference participation type</option>
               <option
                 v-for="type in conferenceTypeList"
                 :key="type.id"
@@ -327,6 +328,9 @@ async function handleSubmit() {
               Upload manuscript in Word format (.doc / .docx)
             </p>
           </div>
+           <div>
+           <p class="text-xs text-slate-200">  <Checkbox required class="mr-3"></Checkbox> By clicking the submit button below, I hereby agree to and accept the terms and conditions governing the process of conference, manuscript review, and full-paper publication. I further reaffirm my acceptance of the terms and conditions governing the options of publication. I am aware that there may be another APC to be paid if I agree to publish my paper in the International Indexed Proceeding or the conference-affiliated journals.</p>
+          </div>
 
           <template v-if="selectedConferenceType.is_referal == true">
               <div>
@@ -341,9 +345,7 @@ async function handleSubmit() {
           </div>
           </template>
           </template>
-          <div>
-           <p class="text-xs text-slate-200">  <Checkbox required class="mr-3"></Checkbox> By clicking the submit button below, I hereby agree to and accept the terms and conditions governing the process of conference, manuscript review, and full-paper publication. I further reaffirm my acceptance of the terms and conditions governing the options of publication. I am aware that there may be another APC to be paid if I agree to publish my paper in the International Indexed Proceeding or the conference-affiliated journals.</p>
-          </div>
+         
 
           <!-- Submit Button -->
           <button

@@ -35,7 +35,7 @@ export default defineNuxtConfig({
         signIn: { path: 'api/v1/login/google', method: 'post' },
         signOut: { path: 'api/v1/logout', method: 'post' },
         signUp: { path: 'api/v1/register', method: 'post' },
-        getSession: { path: 'api/user', method: 'get' },
+        getSession: { path: 'api/v1/user', method: 'get' },
         refresh: { path: 'api/v1/refresh', method: 'post' },
       },
     session: {
@@ -43,8 +43,11 @@ export default defineNuxtConfig({
           id: 'string | number',
           email: 'string',
           name: 'string',
-          picture:'string',
-          email_verified_at:'String | null'
+          email_verified_at:'String | null',
+          participant_detail:{
+            affiliation:'string',
+            no_hp:'string'
+          }
         },
       },
       redirect: {
