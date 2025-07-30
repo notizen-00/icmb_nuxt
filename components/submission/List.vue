@@ -2,6 +2,7 @@
 import { cn } from '@/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
 
+
 interface AbstractListProps {
   items: any[]
 }
@@ -33,23 +34,36 @@ function getBadgeVariantFromLabel(label:boolean) {
           <div class="w-full flex flex-col gap-1">
             <div class="flex items-center">
               <div class="flex items-center gap-2">
-                <div class="font-semibold">
-                  {{ item.manuscript_title }}
+                
+                <div class="font-bold">
+               
+                <i class="fal fa-signal-stream"></i> {{ item.team.name }}
                 </div>
                 <!-- <span
                   v-if="!item.read"
                   class="h-2 w-2 flex rounded-full bg-blue-600"
                 /> -->
               </div>
+            
               <div
                 :class="cn(
-                  'ml-auto text-xs',
+                  'ml-auto text-xs ',
                   selectedSubmissionData === item.id ? 'text-foreground' : 'text-muted-foreground',
                 )"
               >
-                {{ formatDistanceToNow(new Date(item.created_at), { addSuffix: true }) }}
+                <span class="text-slate-100">{{ formatDistanceToNow(new Date(item.created_at), { addSuffix: true }) }}</span>
+                <br>
+              </br>
+              
+              <i class="fal fa-calendar-alt"></i> {{ new Date(item.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) }}
+              </div>
+              <div>
+            
               </div>
             </div>
+              <div class="font-semibold flex ">
+                  {{ item.manuscript_title }}
+              </div>
 
             <div class="text-xs font-medium">
               {{ item.manusript_title }}
@@ -58,11 +72,16 @@ function getBadgeVariantFromLabel(label:boolean) {
           <div class="line-clamp-2 text-xs text-muted-foreground">
             {{ item.corresponding_email.substring(0, 300) }}
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-end justify-between w-full gap-2">
+            
+            <Badge variant="outline" class="ring-1 ring-green-500 text-green"  v-if="item.conference_type.type_participant != 'presenter'">
+              {{ item.form_of_participation }}
+            </Badge>
+            <div></div>
             <Badge
               :variant="getBadgeVariantFromLabel(item.status)"
             >
-              {{ item.status }}
+              {{ item.status ? 'Active':'On Review' }}
             </Badge>
           </div>
         </button>
@@ -73,7 +92,7 @@ function getBadgeVariantFromLabel(label:boolean) {
 
         <div class="mx-auto text-center">
         <img src="/no-data.gif" width="200" height="100" class="mx-auto"></img><br></br>
-        No Abstract Submission Data.
+        No Conference Data.
         </div>
       </div>
     </div>

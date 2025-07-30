@@ -64,21 +64,30 @@ const selectedSubmissionData = computed(() => {
 });
 
 const filteredParticipantList = computed(() => {
-  let output: any[]
-  const searchValue = debouncedSearch.value?.trim() || ''
-  if (!searchValue) {
-    output = props.submissionParticipant
+  const keyword = debouncedSearch.value?.trim().toLowerCase() || ''
+  let filtered = [...props.submissionParticipant]
+
+  // Tab filtering
+  if (activeTypeTab.value === 'Seminar Only') {
+    filtered = filtered.filter((item: any) => item.conference_type.type_participant !== 'presenter')
+  }else{
+    filtered = filtered.filter((item:any)=>item.conference_type.type_participant === 'presenter')
   }
 
-  else {
-    output = props.submissionParticipant.filter((item:any) => {
-      return (item.manuscript_title ?? '').includes(debouncedSearch.value)
-        || (item.corresponding_email ?? '').includes(debouncedSearch.value)
+
+  // Search filtering
+  if (keyword) {
+    filtered = filtered.filter((item: any) => {
+      return (
+        (item.manuscript_title ?? '').toLowerCase().includes(keyword) ||
+        (item.corresponding_email ?? '').toLowerCase().includes(keyword)
+      )
     })
   }
 
-  return output
+  return filtered
 })
+
 
 console.log(props.submissionParticipant)
 

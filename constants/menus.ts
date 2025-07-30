@@ -10,8 +10,8 @@ export const navMenu: NavMenu[] = [
         link: '/',
       },
       {
-        title: 'Submission',
-        icon: 'i-lucide-file-cog',
+        title: 'Coference',
+        icon: 'i-lucide-layout-dashboard',
         link: '/submission',
       },
       {
