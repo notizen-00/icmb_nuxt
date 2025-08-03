@@ -6,7 +6,8 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api',
       BaseUrl: process.env.NUXT_ASSET_BASE_URL || 'http://localhost/storage/images/',
       shipBase: 'https://pro.rajaongkir.com/api',
-      shipKey:'a21c1b1d2b61425d9d8eaa936a1fe3e5'
+      shipKey:'a21c1b1d2b61425d9d8eaa936a1fe3e5',
+      ServerUrl:process.env.NUXT_PUBLIC_API_URL
     },
   },
   modules: [

@@ -144,12 +144,13 @@ async function handleSubmit() {
 <template>
   <Dialog>
     <DialogTrigger as-child>
-      <button
-        class="ring-1 ring-blue-400 py-1 px-2 rounded-2 text-sm text-blue-500"
-      >
-        <i class="fal fa-signal-stream text-blue-400"></i>
-        Join Conference 
-      </button>
+    <button
+  class="border border-b-4 border-r-4 active:border-b active:border-r transition duration-150 ease-in-out active:translate-y-[2px] border-blue-400 py-1 px-2 rounded-2 text-sm text-blue-500"
+>
+  <i class="fal fa-signal-stream text-blue-400"></i>
+  Join Conference 
+</button>
+
     </DialogTrigger>
     <DialogScrollContent class="sm:max-w-[700px] ">
       <DialogHeader>

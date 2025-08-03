@@ -6,7 +6,6 @@ const pembayaranStore = usePembayaranStore();
 const participantStore = useParticipantStore();
 const isLoading = ref(false)
   participantStore.fetchDetail()
-  pembayaranStore.checkPayment()
 
 
 
