@@ -10,7 +10,7 @@ export const navMenu: NavMenu[] = [
         link: '/',
       },
       {
-        title: 'Coference',
+        title: 'Conference',
         icon: 'i-lucide-layout-dashboard',
         link: '/submission',
       },

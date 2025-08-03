@@ -73,15 +73,19 @@ function getBadgeVariantFromLabel(label:boolean) {
             {{ item.corresponding_email.substring(0, 300) }}
           </div>
           <div class="flex items-end justify-between w-full gap-2">
-            
-            <Badge variant="outline" class="ring-1 ring-green-500 text-green"  v-if="item.conference_type.type_participant != 'presenter'">
+            <div>
+            <Badge variant="outline" class="ring-1 ring-green-500 text-green mr-2"  v-if="item.conference_type.type_participant != 'presenter'">
               {{ item.form_of_participation }}
             </Badge>
+            <Badge variant="outline" class="ring-1 ring-blue-500 text-blue"  v-if="item.conference_type.type_participant != 'presenter'">
+             <i class="fal fa-tag mr-2"></i> {{ item.conference_type.name }}
+            </Badge>
+            </div>
             <div></div>
             <Badge
               :variant="getBadgeVariantFromLabel(item.status)"
             >
-              {{ item.status ? 'Active':'On Review' }}
+              {{ item.status ? 'Active':'On Verification' }}
             </Badge>
           </div>
         </button>
