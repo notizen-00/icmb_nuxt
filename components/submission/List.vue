@@ -16,6 +16,9 @@ function getBadgeVariantFromLabel(label:boolean) {
   if (label) return 'default'
   return 'secondary'
 }
+const config = useRuntimeConfig();
+
+const baseUrl = config.public.ServerUrl;
 </script>
 <template>
   <ScrollArea class="h-[calc(100dvh-72px-56px-3rem-53px)] flex">
@@ -34,7 +37,7 @@ function getBadgeVariantFromLabel(label:boolean) {
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
               <div class="flex items-center gap-2 text-sm font-bold">
                 <a
-                  :href="'http://icmb-app.test/site/' + item.team.slug"
+                  :href="baseUrl+'/site/' + item.team.slug"
                   target="_blank"
                   class="hover:underline"
                   @click.stop
