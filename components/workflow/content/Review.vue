@@ -5,7 +5,7 @@ const submissionStore = useSubmissionStore()
 const discussionStore = useDiscussionStore();
 const showModal = ref(discussionStore.isLoading);
 const user = { id: 123 }      // Ganti sesuai data
-const submission = { id: submissionStore.detailSubmission.submission_internal.id, team_id: submissionStore.detailSubmission.submission_internal.team_id } // Ganti sesuai data
+const submission = { id: submissionStore.detailSubmission.submission.id, team_id: submissionStore.detailSubmission.submission.team_id } // Ganti sesuai data
 
 function onDiscussionAdded(discussion) {
   console.log('Discussion added', discussion)
@@ -27,7 +27,7 @@ const roundStatus = computed(() => {
 })
 
 onMounted(async()=>{
-    await discussionStore.fetchDetail(submissionStore.detailSubmission.submission_internal.id)
+    await discussionStore.fetchDetail(submissionStore.detailSubmission.submission.id)
 
 
 })

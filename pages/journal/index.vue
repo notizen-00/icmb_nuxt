@@ -5,18 +5,16 @@ const participantStore = useParticipantStore()
 
 const submissionStore = useSubmissionStore()
 
-submissionStore.fetchAbstract();
-
-
+submissionStore.fetchSubmission();
 
 </script>
 
 <template>
   <div class="-m-4 lg:-m-6">
-    <SubmissionLayout
+    <JournalLayout
       :accounts="accounts"
       :participant="participantStore.detailParticipant"
-      :submission-participant="submissionStore.participant"
+      :submission-participant="submissionStore.listSubmission"
       :nav-collapsed-size="4"
     />
   </div>

@@ -12,7 +12,7 @@
     </p>
       <div class="min-h-[400px] max-h-[400px] overflow-y-auto border rounded p-2">
         <label class="block text-sm font-medium mb-2">Comment for the editors </label> 
-        <textarea v-model="modelValue.commentsForTheEditors" class="w-full text-black min-h-[200px]"/>
+        <textarea v-model="modelValue.commentsForTheEditors" class="w-full text-black dark:bg-black dark:text-white min-h-[200px]"/>
       </div>
     </div>
 

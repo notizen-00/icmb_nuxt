@@ -3,6 +3,9 @@ import { cn } from '@/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
 
 
+const router = useRouter()
+
+
 interface AbstractListProps {
   items: any[]
 }
@@ -11,11 +14,6 @@ const props = defineProps<AbstractListProps>()
 
 const selectedSubmissionData = defineModel<string>('selectedSubmissionData', { required: false })
 
-function getBadgeVariantFromLabel(label:boolean) {
-  if (!label) return 'default'
-  if (label) return 'default'
-  return 'secondary'
-}
 </script>
 <template>
   <ScrollArea class="h-[calc(100dvh-72px-56px-3rem-53px)] flex">
@@ -28,7 +26,7 @@ function getBadgeVariantFromLabel(label:boolean) {
             'flex flex-col gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
             selectedSubmissionData === item.id && 'bg-muted'
           )"
-          @click="selectedSubmissionData = item.id.toString()"
+          @click="router.push('/journal/'+item.id)"
         >
           <div class="w-full flex flex-col gap-2 sm:gap-1">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
@@ -59,36 +57,21 @@ function getBadgeVariantFromLabel(label:boolean) {
             </div>
 
             <div class="text-sm font-semibold text-wrap break-words">
-              {{ item.manuscript_title }}
+              {{ item.participant.manuscript_title }}
             </div>
 
             <div class="text-xs text-muted-foreground break-words">
-              <span class="text-white">{{ item.corresponding_author }}</span> /  {{ item.form_of_participation }}
+              <span class="text-white">{{ item.participant.corresponding_author }}</span> /  {{ item.participant.form_of_participation }}
             </div>
           </div>
 
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
             <div class="flex flex-wrap items-center gap-2 text-xs">
-
-              <Badge
-                variant="outline"
-                class="ring-1 ring-blue-500 text-blue-600"
-              >
-                <i class="fal fa-tag mr-1"></i> {{ item.conference_type.name }}
-              </Badge>
                 
             </div>
 
-            <div>
-            <Badge
-              :variant="getBadgeVariantFromLabel(item.status)"
-              :class="item.status ? 'text-green-600 ring-1 ring-green-600' : 'text-black ring-black'"
-              class="w-fit"
-            >
-              {{ item.status ? 'Approved' : 'On Verification' }}
-            </Badge>
-                <BaseBadgePaymentStatus class="ml-2" :status="item.participant_payment.status"></BaseBadgePaymentStatus>
-                </div>
+            <BaseBadgeStatus :status="item.status"></BaseBadgeStatus>
+        
           </div>
         </button>
       </TransitionGroup>
@@ -99,7 +82,7 @@ function getBadgeVariantFromLabel(label:boolean) {
       >
         <div class="mx-auto text-center">
           <img src="/no-data.gif" width="200" height="100" class="mx-auto mb-2" />
-          <p>No Conference Data.</p>
+          <p>No Submission Data.</p>
         </div>
       </div>
     </div>

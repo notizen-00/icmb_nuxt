@@ -14,7 +14,7 @@
 
     <div class="border rounded divide-y">
       <div
-        v-for="(contributor, index) in submissionStore.detailSubmission.contributors.items"
+        v-for="(contributor, index) in submissionStore.detailSubmission?.contributors?.items"
         :key="index"
         class="flex justify-between items-center p-4"
       >

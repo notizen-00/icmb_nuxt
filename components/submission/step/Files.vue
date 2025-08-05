@@ -45,7 +45,7 @@ const props = defineProps({
 })
 
 const submissionStore = useSubmissionStore();
-props.modelValue.files = submissionStore.detailSubmission.submission_files.items
+props.modelValue.files = submissionStore.detailSubmission?.submission_files?.items
 
 const emit = defineEmits(['update:modelValue'])
 

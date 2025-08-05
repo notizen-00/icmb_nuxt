@@ -5,6 +5,7 @@ import { Archive, ArchiveX, ArrowLeft, Clock, Forward, MoreVertical, Reply, Repl
 import { computed } from 'vue'
 import type { Participant } from '~/interfaces/participant/Participant.js'
 
+const router = useRouter();
 
 interface SubmissionDisplayProps {
   participant: any | undefined
@@ -26,6 +27,10 @@ const fileUrl = computed(() =>
 const statusText = computed(() =>
   props.participant.participant_payment.status === 1 ? 'Settlement' : 'On Verification'
 )
+
+const goToJournal = (id:any) =>{
+  router.push('/journal/'+id);
+}
 
 const today = new Date()
 </script>
@@ -64,112 +69,14 @@ const today = new Date()
           <TooltipContent>Move to trash</TooltipContent>
         </Tooltip>
         <Separator orientation="vertical" class="mx-1 h-6" />
-        <Tooltip>
-          <Popover>
-            <PopoverTrigger as-child>
-              <TooltipTrigger as-child>
-                <Button variant="ghost" size="icon" :disabled="!participant">
-                  <Clock class="size-4" />
-                  <span class="sr-only">Snooze</span>
-                </Button>
-              </TooltipTrigger>
-            </PopoverTrigger>
-            <PopoverContent class="w-full flex p-0">
-              <div class="flex flex-col gap-2 border-r px-2 py-4">
-                <div class="px-4 text-sm font-medium">
-                  Snooze until
-                </div>
-                <div class="grid min-w-[250px] gap-1">
-                  <Button
-                    variant="ghost"
-                    class="justify-start font-normal"
-                  >
-                    Later today
-                    <span class="ml-auto text-muted-foreground">
-                      {{ format(addHours(today, 4), "E, h:m b") }}
-                    </span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    class="justify-start font-normal"
-                  >
-                    Tomorrow
-                    <span class="ml-auto text-muted-foreground">
-                      {{ format(addDays(today, 1), "E, h:m b") }}
-                    </span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    class="justify-start font-normal"
-                  >
-                    This weekend
-                    <span class="ml-auto text-muted-foreground">
-                      {{ format(nextSaturday(today), "E, h:m b") }}
-                    </span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    class="justify-start font-normal"
-                  >
-                    Next week
-                    <span class="ml-auto text-muted-foreground">
-                      {{ format(addDays(today, 7), "E, h:m b") }}
-                    </span>
-                  </Button>
-                </div>
-              </div>
-              <div class="p-2">
-                <Calendar />
-              </div>
-            </PopoverContent>
-          </Popover>
-          <TooltipContent>Snooze</TooltipContent>
-        </Tooltip>
+        
       </div>
       <div class="ml-auto flex items-center gap-2">
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!participant">
-              <Reply class="size-4" />
-              <span class="sr-only">Reply</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Reply</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!participant">
-              <ReplyAll class="size-4" />
-              <span class="sr-only">Reply all</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Reply all</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!participant">
-              <Forward class="size-4" />
-              <span class="sr-only">Forward</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Forward</TooltipContent>
-        </Tooltip>
+        <div v-if="participant.submission != null">
+
+        <button class="" @click="goToJournal(participant.submission.id)"><i class="fal fa-eye"></i> View Journal </button>
       </div>
-      <Separator orientation="vertical" class="mx-2 h-6" />
-      <DropdownMenu>
-        <DropdownMenuTrigger as-child>
-          <Button variant="ghost" size="icon" :disabled="!participant">
-            <MoreVertical class="size-4" />
-            <span class="sr-only">More</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>Mark as unread</DropdownMenuItem>
-          <DropdownMenuItem>Star thread</DropdownMenuItem>
-          <DropdownMenuItem>Add label</DropdownMenuItem>
-          <DropdownMenuItem>Mute thread</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      </div>
     </div>
     <Separator />
     <div v-if="participant" class="flex flex-1 flex-col">
@@ -193,7 +100,7 @@ const today = new Date()
             <div class="mt-2 h-1 text-lg">
             <i class="fal fa-signal-stream text-blue"></i> {{ participant.team.name }}
             </div>
-             <div class="mx-1 mt-10"><BaseStackAvatar v-if="participant.conference_type.type_participant == 'presenter'" :item="participant.author"></BaseStackAvatar></div>
+            <div class="mx-1 mt-10"><BaseStackAvatar v-if="participant.conference_type.type_participant == 'presenter'" :item="participant.author"></BaseStackAvatar></div>
           </div>
         </div>
         <div v-if="participant.created_at" class="ml-auto text-xs text-muted-foreground">
@@ -212,22 +119,21 @@ const today = new Date()
             </Badge>
         </div>
       <Separator />
+    
       <div class="flex-1 whitespace-pre-wrap p-4 text-sm">
-        
         <BaseTicketParticipant :participant="participant" v-if="participant.status == 1"></BaseTicketParticipant>
-       
       </div>
       <Separator class="mt-auto" />
-      <div class="p-4">
+      <div class="p-4" v-if="participant.status == 1 && participant.conference_type.type_participant == 'presenter'">
         <div>
           <div class="flex w-full justify-between">
         <h1>Payment Information</h1>
         <SubmissionDialogCreatePayment :participant="participant" v-if="participant.participant_payment == null"></SubmissionDialogCreatePayment>
         </div>
 
-    <h4 class="text-slate-400 text-xs mb-4">
-      To proceed with the verification process, please make the payment to the Virtual Account below and upload the payment proof.  
-    </h4>
+        <h4 class="text-slate-400 text-xs mb-4">
+          To proceed with the verification process, please make the payment to the Virtual Account below and upload the payment proof.  
+        </h4>
 
 
          <BasePaymentInfo 
@@ -283,12 +189,9 @@ const today = new Date()
 
     <!-- Status -->
     <div
-      :class="[
-        'text-xs font-medium px-3 py-1 rounded-full',
-        participant.participant_payment.status === 1 ? 'bg-green-600 text-white' : 'bg-yellow-500 text-black'
-      ]"
+    
     >
-      {{ statusText }}
+      <BaseBadgePaymentStatus :status="participant.participant_payment.status"></BaseBadgePaymentStatus>
     </div>
   </div>
       </div>

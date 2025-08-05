@@ -1,8 +1,7 @@
 <template>
   <div class="w-full max-w-6xl mx-auto p-8 h-screen overflow-y-auto">
     <!-- Stepper -->
-    <div class="flex border-b mb-6 sticky top-0 z-10">
-
+    <div class="flex border-b mb-6 sticky top-0 z-10 bg-white">
       <button
         v-for="(step, index) in steps"
         :key="index"
@@ -20,7 +19,13 @@
 
     <!-- Step Component -->
     <div class="min-h-[300px]">
-      <component :is="steps[currentStep].component" v-model="formData[currentStep]" v-bind="currentStep === 4 ? { modelValue: formData } : { modelValue: formData[currentStep] }"/>
+      <component
+        :is="steps[currentStep].component"
+        v-bind="{
+          modelValue: currentStep === 4 ? formData : formData[currentStep],
+        }"
+        @update:modelValue="(val) => formData[currentStep] = val"
+      />
     </div>
 
     <!-- Actions -->
@@ -33,8 +38,15 @@
         Back
       </button>
 
+
+      <div  v-if="currentStep < steps.length - 1">
+      <button class="ml-auto px-4 bg-black-500 text-white hover:bg-white hover:text-black mr-3 py-2 rounded transition" @click="saveForLater()">
+        Save for Later
+      </button>
+
+
       <button
-        v-if="currentStep < steps.length - 1"
+ 
         @click="nextStep"
         :disabled="!canContinue"
         class="ml-auto px-4 py-2 rounded transition"
@@ -44,6 +56,7 @@
       >
         Continue
       </button>
+      </div>
 
       <button
         v-else
@@ -57,44 +70,58 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import SubmissionStepDetails from '@/components/submission/step/Details.vue'
 import StepFiles from '@/components/submission/step/Files.vue'
 import StepContributors from '@/components/submission/step/Contributors.vue'
 import StepEditors from '@/components/submission/step/Editors.vue'
 import StepReview from '@/components/submission/step/Review.vue'
+import { toast } from 'vue3-toastify'
 
 const props = defineProps({
   submission: Object,
 })
 
+const submissionStore = useSubmissionStore()
+
 const currentStep = ref(0)
-const submissionStore = useSubmissionStore();
-
-onMounted(async()=>{
-  await submissionStore.fetchDetail();
-})
-
 
 const formData = ref([
   {
     title: '',
     keywords: '',
     abstract: '',
+    step: 'details',
+    submissionId: null
   },
   {
     files: [],
+    step: 'files'
   },
   {
-    contributors: submissionStore.detailSubmission.contributors?.items || [],
+    contributors: [],
+    step: 'contributors'
   },
   {
-    commentsForTheEditors:'' ,
+    commentsForTheEditors: '',
+    step: 'editors',
+    submissionId:null
   },
   {
     review: '',
+    step: 'review'
   },
 ])
+
+// Inject ID from store once submission is available
+watchEffect(() => {
+  const submission = submissionStore.detailSubmission?.submission
+  if (submission?.id) {
+    formData.value[0].submissionId = submission.id
+    formData.value[3].submissionId = submission.id
+    formData.value[2].contributors = submissionStore.detailSubmission?.contributors?.items || []
+  }
+})
 
 const steps = [
   { label: 'Details', component: SubmissionStepDetails },
@@ -109,54 +136,47 @@ const isStepValid = (stepIndex) => {
   const data = formData.value[stepIndex]
   switch (stepIndex) {
     case 0:
-
       return !!data.title?.trim() && !!data.abstract?.trim()
     case 1:
       return data.files && data.files.length > 0
     case 2:
-      return data.contributors.length > 0
+      return Array.isArray(data.contributors) && data.contributors.length > 0
     case 3:
-     const hasTextsContent = Array.isArray(data.commentsForTheEditors)
-        && data.commentsForTheEditors.some(item => item.textContent?.trim().length > 0)
-     return !!data.commentsForTheEditors?.trim()
+      return !!data.commentsForTheEditors?.trim()
     default:
       return true
   }
 }
 
-
-// Tombol Continue disabled jika tidak valid
 const canContinue = computed(() => isStepValid(currentStep.value))
 
-// Next Step
-const nextStep = () => {
-  if (isStepValid(currentStep.value)) {
-
-    if(currentStep.value == 0 ){
-
-        // alert('hii')
-        console.log(formData.value[0])
-        submissionStore.updatePublication(formData.value[0]);
-      currentStep.value == 0;
+const saveForLater = async() =>{
+  
+ 
+    const response = await submissionStore.updatePublication(formData.value[currentStep.value])
+    if (response === 'success') {
+      submissionStore.fetchSubmissionDetail(formData.value[0].submissionId)
+      toast.success('sukses')
+    } else {
+      toast.error('error')
     }
+
+}
+const nextStep =  () => {
+  if (!isStepValid(currentStep.value)) return
+
+  // Step 0 needs saving before continuing
     currentStep.value++
-  }
+  
 }
 
-// Tidak bisa lompat ke depan jika belum valid
 const goToStep = (index) => {
-  if (index > currentStep.value) {
-    if (!isStepValid(currentStep.value)) return
-  }
+  if (index > currentStep.value && !isStepValid(currentStep.value)) return
   currentStep.value = index
 }
 
-// Submit Akhir
-const submitForm = async() => {
+const submitForm = async () => {
   console.log('Final Form Data:', formData.value)
-
-
-  await submissionStore.doSubmission()
-
+  await submissionStore.doSubmission(submissionStore.detailSubmission?.submission?.id)
 }
 </script>

@@ -15,6 +15,11 @@ export const navMenu: NavMenu[] = [
         link: '/submission',
       },
       {
+        title:'Journal',
+        icon:'i-lucide-file',
+        link:'/journal'
+      },
+      {
         title: 'Payment',
         icon: 'i-lucide-credit-card',
         link: '/payment',

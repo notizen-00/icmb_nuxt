@@ -23,7 +23,7 @@ console.log(siteUrl);
         <div class="text-lg font-semibold text-black">{{ participant.form_of_participation }}</div>
       </div>
       <div class="text-right">
-        <div class="uppercase text-xs">Date Verification</div>
+        <div class="uppercase text-xs">Date Of Verification</div>
         <div class="text-xs font-semibold text-slate-400">{{ formatDate(participant.updated_at) }}</div>
       </div>
     </div>

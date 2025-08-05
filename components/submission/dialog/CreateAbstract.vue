@@ -1,4 +1,4 @@
-import { ConferenceType } from '../../../interfaces/participant/ConferenceType';
+
 <script setup lang="ts">
 import { toast } from 'vue3-toastify'
 
@@ -27,6 +27,8 @@ const contact = ref(data.value?.participant_detail.no_hp)
 const participant_type = ref('')
 const manuscript = ref<File | null>(null)
 const referalCode = ref('')
+const isLoading  = ref(false)
+const dialogRef = ref(false)
 
 
 // Handle file input
@@ -58,9 +60,11 @@ watch(conferenceType, (newId) => {
 
 async function handleSubmit() {
 
+isLoading.value = true;
  if(participant_type.value == 'presenter'){
       if (!manuscript.value) {
     alert('Please upload your manuscript file before submitting.')
+    isLoading.value = false;
     return
   }
  }
@@ -105,6 +109,8 @@ async function handleSubmit() {
 
     const result = await response.json()
 
+    isLoading.value = false;
+
   if (!response.ok) {
     // Laravel validation error (422)
     if (response.status === 422 && result.errors) {
@@ -119,9 +125,9 @@ async function handleSubmit() {
     // Unauthorized or general error
     throw new Error(result.message || 'Submission failed')
   }
-
+   isLoading.value = false;
     alert('Registration successful!')
-
+   isLoading.value = false;
     // Reset form fields
     conferenceType.value = ''
     title.value = ''
@@ -135,6 +141,7 @@ async function handleSubmit() {
 
   } catch (error:any) {
     console.error('Form submission error:', error.data)
+     isLoading.value = false;
     // toast.error(error.errors || 'Failed to submit form !')
   }
 }
@@ -142,9 +149,10 @@ async function handleSubmit() {
 
 </script>
 <template>
-  <Dialog>
+  <Dialog :open="dialogRef">
     <DialogTrigger as-child>
     <button
+      @click="dialogRef = !dialogRef"
   class="border border-b-4 border-r-4 active:border-b active:border-r transition duration-150 ease-in-out active:translate-y-[2px] border-blue-400 py-1 px-2 rounded-2 text-sm text-blue-500"
 >
   <i class="fal fa-signal-stream text-blue-400"></i>
@@ -158,6 +166,7 @@ async function handleSubmit() {
         <DialogDescription>
           Make changes to your profile here. Click save when you're done.
         </DialogDescription>
+          <DialogClose @click="dialogRef = !dialogRef" class="text-red">Cancel Join Conference</DialogClose>
       </DialogHeader>
       <div class="grid gap-4 ">
         <form @submit.prevent="handleSubmit" class="grid gap-6 bg-zinc-900 p-6 rounded-xl shadow-md">
@@ -353,7 +362,7 @@ async function handleSubmit() {
             type="submit"
             class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg shadow-sm transition duration-150 ease-in-out"
           >
-            Submit
+             <i class="fal fa-refresh fa-spin" v-if="isLoading"></i> Submit
           </button>
         </form>
       </div>

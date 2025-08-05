@@ -1,5 +1,6 @@
 <template>
-  <div class="p-6 mt-10 max-w-9xl mx-auto shadow rounded">
+  <div class="p-0 max-w-full mx-auto shadow rounded">
+    <WorkflowPartialToolbar :submission="submissionStore.detailSubmission?.submission"></WorkflowPartialToolbar>
     <Tabs :tabs="stageTabs" :activeTab="activeTab" @changeTab="activeTab = $event" />
     <div class="mt-6">
       <component :is="currentComponent" />

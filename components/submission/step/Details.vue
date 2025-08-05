@@ -7,7 +7,7 @@
       <input
         v-model="modelValue.title"
         type="text"
-        class="w-full border rounded text-black px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        class="w-full border rounded text-black px-3 py-2 text-black dark:bg-black dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         placeholder="Title of your paper"
       />
     </div>
@@ -17,7 +17,7 @@
       <input
         v-model="modelValue.keywords"
         type="text"
-        class="w-full border text-black rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        class="w-full border text-black dark:bg-black dark:text-white rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         placeholder="Example: AI, Networking, Security"
       />
     </div>
@@ -60,16 +60,11 @@ const safeJSON = (json) => {
 
 onMounted(async () => {
     isLoading.value = true
-  // await submissionStore.fetchDetail()
-
-  const abstractData = safeJSON(submissionStore.detailSubmission.submission_internal?.abstract)
-
-
 
   emit('update:modelValue', {
     ...props.modelValue,
-    title: submissionStore.detailSubmission.submission_data?.publications?.[0]?.title || '',
-    abstract: submissionStore.detailSubmission.submission_internal?.abstract || ''
+    title: submissionStore.detailSubmission?.submission_data?.publications?.[0]?.title['en'] || '',
+    abstract: submissionStore.detailSubmission?.submission?.abstract || ''
   })
 
     isLoading.value = false
