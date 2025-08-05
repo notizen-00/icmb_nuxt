@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Loader2 } from 'lucide-vue-next'
 import PasswordInput from '~/components/PasswordInput.vue'
+import { toast } from 'vue3-toastify'
 
 const router = useRouter()
 const auth = useAuth()
@@ -48,7 +49,8 @@ const onSubmit = async () => {
     router.push('/')
   } catch (error) {
     console.error(error)
-    alert('Username atau password salah.')
+    // alert('Username atau password salah.')
+    toast.error('Invalid Credentials !')
   } finally {
     isLoading.value = false
     email.value = ''

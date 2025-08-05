@@ -51,11 +51,11 @@ watch(teamId, async (newId) => {
 })
 
 
-watch(conferenceType, (newId) => {
-  const typeObj = conferenceTypestore.ConferenceTypes.find((type) => type.id.toString() == newId)
-  selectedConferenceType.value = typeObj || {}
-  participant_type.value = typeObj.type_participant
-})
+  watch(conferenceType, (newId) => {
+    const typeObj = conferenceTypestore.ConferenceTypes.find((type) => type.id.toString() == newId)
+    selectedConferenceType.value = typeObj || {}
+    participant_type.value = typeObj.type_participant ?? ''
+  })
 
 
 async function handleSubmit() {
@@ -125,11 +125,15 @@ isLoading.value = true;
     // Unauthorized or general error
     throw new Error(result.message || 'Submission failed')
   }
+
+  if(response.ok || response.status === 201){
+     isLoading.value = false;
+    toast.success('Join conference succesfull');
    isLoading.value = false;
-    alert('Registration successful!')
-   isLoading.value = false;
+   dialogRef.value = false;
     // Reset form fields
-    conferenceType.value = ''
+  
+    participant_type.value = ''
     title.value = ''
     email.value = ''
     correspondingAuthor.value = ''
@@ -138,6 +142,15 @@ isLoading.value = true;
     teamId.value = ''
     contact.value = ''
     manuscript.value = null
+    useSubmissionStore().fetchAbstract();
+
+     setTimeout(() => {
+    conferenceType.value = '';
+    conferenceTypeList.value = [];
+  }, 300); // 300ms delay
+  }
+  
+
 
   } catch (error:any) {
     console.error('Form submission error:', error.data)

@@ -124,7 +124,7 @@ const today = new Date()
         <BaseTicketParticipant :participant="participant" v-if="participant.status == 1"></BaseTicketParticipant>
       </div>
       <Separator class="mt-auto" />
-      <div class="p-4" v-if="participant.status == 1 && participant.conference_type.type_participant == 'presenter'">
+      <div class="p-4" v-if="participant.status == 1 && participant.conference_type.type_participant == 'presenter' || participant.status == 0 && participant.conference_type.type_participant != 'presenter'">
         <div>
           <div class="flex w-full justify-between">
         <h1>Payment Information</h1>
@@ -140,7 +140,10 @@ const today = new Date()
           vaNumber="9881151569300012"
           billingId="9881151569300012"
           name="Penerimaan dana FEB"></BasePaymentInfo>
-      </div>  
+      </div> 
+
+      
+      
 
     <div
   v-if="participant.participant_payment == null"

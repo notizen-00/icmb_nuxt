@@ -69,14 +69,12 @@ function getBadgeVariantFromLabel(label:boolean) {
 
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
             <div class="flex flex-wrap items-center gap-2 text-xs">
-
               <Badge
                 variant="outline"
                 class="ring-1 ring-blue-500 text-blue-600"
               >
                 <i class="fal fa-tag mr-1"></i> {{ item.conference_type.name }}
               </Badge>
-                
             </div>
 
             <div>
@@ -87,8 +85,10 @@ function getBadgeVariantFromLabel(label:boolean) {
             >
               {{ item.status ? 'Approved' : 'On Verification' }}
             </Badge>
-                <BaseBadgePaymentStatus class="ml-2" :status="item.participant_payment.status"></BaseBadgePaymentStatus>
-                </div>
+
+            <BaseBadgePaymentStatus class="ml-2" v-if="item.participant_payment != null" :status="item.participant_payment.status"></BaseBadgePaymentStatus>
+            <span class="ml-2" v-if="item.participant_payment == null && item.status == 1 && item.conference_type.type_participant == 'presenter'"> <BaseBadgePaymentStatus :status="0"></BaseBadgePaymentStatus> </span>
+            </div>
           </div>
         </button>
       </TransitionGroup>

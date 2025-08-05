@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-6xl mx-auto p-8 h-screen overflow-y-auto">
+  <div class="w-full max-w-full mx-auto p-8 h-screen overflow-y-auto">
     <!-- Stepper -->
     <div class="flex border-b mb-6 sticky top-0 z-10 bg-white">
       <button

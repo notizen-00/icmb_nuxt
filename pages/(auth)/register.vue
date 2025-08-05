@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { toast } from 'vue3-toastify'
 definePageMeta({
   layout: 'blank',
 })
@@ -17,47 +18,49 @@ const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
 async function handleSubmit() {
-  const formData = new FormData()
-  formData.append('name', name.value)
-  formData.append('email', email.value)
-  formData.append('affiliation', affiliation.value)
-  formData.append('password', password.value)
-  formData.append('contact',contact.value)
-  formData.append('confirm_password', confirm_password.value)
-
   const config = useRuntimeConfig()
   const baseUrl = config.public.apiBaseUrl
 
   try {
     const response = await fetch(`${baseUrl}/register-manuscript`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name.value,
+        email: email.value,
+        affiliation: affiliation.value,
+        password: password.value,
+        contact: contact.value,
+        confirm_password: confirm_password.value,
+      }),
     })
 
     const result = await response.json()
 
     if (!response.ok) {
-      error.value = result.errors
+      error.value = result.errors ||
+       result.message || 'Registration failed'
       return
     }
 
     success.value = true
-    
-    alert('Registration successful!')
+    toast.success('Registration successfull!')
     window.location.href = '/login'
-    
+
     error.value = ''
 
     // Clear input
-    email.value = ''
-    password.value = ''
-    confirm_password.value= ''
-    affiliation.value = ''
     name.value = ''
+    email.value = ''
+    affiliation.value = ''
+    password.value = ''
+    confirm_password.value = ''
     contact.value = ''
-  } catch (error: any) {
-    console.error('Form submission error:', error)
-    error.value = error
+  } catch (err: any) {
+    console.error('Form submission error:', err)
+    error.value = err.message || 'An unexpected error occurred.'
   }
 }
 </script>
