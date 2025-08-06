@@ -1,4 +1,4 @@
-import Copyediting from '@/components/workflow/content/Copyediting.vue';
+
 <script setup>
 
 
@@ -6,7 +6,7 @@ const submissionStore = useSubmissionStore()
 const discussionStore = useDiscussionStore();
 const showModal = ref(discussionStore.isLoading);
 const user = { id: 123 }      // Ganti sesuai data
-const submission = { id: submissionStore.detailSubmission.submission_internal.id, team_id: submissionStore.detailSubmission.submission_internal.team_id } // Ganti sesuai data
+const submission = { id: submissionStore.detailSubmission.submission.id, team_id: submissionStore.detailSubmission.submission.team_id } // Ganti sesuai data
 
 function onDiscussionAdded(discussion) {
   console.log('Discussion added', discussion)
@@ -27,14 +27,17 @@ const roundStatus = computed(() => {
   return activeStage.value?.status || 'Unknown stage status'
 })
 const filteredDiscussion = computed(() => {
-  return discussionStore.detailDiscussion.filter(i => i.stage === 'copyediting');
+  const discussions = discussionStore.detailDiscussion;
+  if (discussions == null) return []; // jika null/undefined, kembalikan array kosong
+
+  return discussions.filter(i => i.stage === 'copyediting');
 });
 
-onMounted(async()=>{
-    await discussionStore.fetchDetail(submissionStore.detailSubmission.submission_internal.id)
 
 
-})
+   const response = discussionStore.fetchDetail(submissionStore.detailSubmission?.submission.id)
+
+
 
 const {data} = useAuth()
 </script>
@@ -70,7 +73,7 @@ const {data} = useAuth()
             <th class="px-4 py-2">Action</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="filteredDiscussion != null || filteredDiscussion.length > 0">
           <tr v-for="i in filteredDiscussion">
             <td class="px-4 py-2">{{ i.discussion_name }}</td>
             <td class="px-4 py-2">{{ i.owner.name }}</td> 
@@ -91,6 +94,7 @@ const {data} = useAuth()
             </td>
           </tr>
         </tbody>
+        <div v-else>No Discussion</div>
       </table>
     </div>
   </div>
@@ -114,7 +118,7 @@ const {data} = useAuth()
         <a
           class="text-blue-600 underline"
           target="_blank"
-          :href="file.url"
+          @click="submissionStore.downloadFile(file.path)"
         >
           {{ file.name?.en || 'Untitled' }}
         </a>

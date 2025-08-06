@@ -11,10 +11,12 @@
         :key="file.filesId"
         class="flex items-center justify-between p-3"
       >
+
+      <!-- {{ file }} -->
         <a
           class="text-blue-600 underline"
           target="_blank"
-          :href="file.url"
+          @click="submissionStore.downloadFile(file.path)"
         >
           {{ file.name?.en || 'Untitled' }}
         </a>
@@ -49,6 +51,7 @@ const submissionStore = useSubmissionStore()
 const submissionFiles = computed(() => {
   return submissionStore.detailSubmission?.submission_files?.items || []
 })
+
 
 function formatDate(dateStr: string | undefined): string {
   if (!dateStr) return '-'

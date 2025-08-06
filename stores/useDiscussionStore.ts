@@ -6,7 +6,7 @@ import { toast } from 'vue3-toastify'
 export const useDiscussionStore = defineStore('Discussion', {
   state: () => ({
     Discussion: {} as any,
-    detailDiscussion:{} as any,
+    detailDiscussion:{} as any | null,
     isLoading: false,
     isDialog:false,
     isDialogNote:false,
@@ -140,7 +140,8 @@ export const useDiscussionStore = defineStore('Discussion', {
 
         if (error.value) throw new Error(error.value.message)
 
-        this.detailDiscussion = data.value
+        this.detailDiscussion = data.value ?? null
+        return data.value;
         // localStorage.setItem('Discussion', JSON.stringify(this.Discussion))
       } catch (err: any) {
         this.error = err.message || 'Failed to fetch Discussions'

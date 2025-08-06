@@ -262,7 +262,7 @@ export const useSubmissionStore = defineStore('Submission', {
 
       try {
         const { data, error } = await useFetch<any>(
-          `${baseUrl}/submission/${id}`,
+          `${baseUrl}/submission/find/${id}`,
           {
             method: 'GET',
             headers: {
@@ -322,6 +322,57 @@ export const useSubmissionStore = defineStore('Submission', {
         // toast.success('Berhasil load data submission')
       }
     },
+
+ async downloadFile(path: any) {
+  const config = useRuntimeConfig();
+  const baseUrl = config.public.apiBaseUrl;
+  const { token } = useAuth();
+
+  this.isLoading = true;
+  this.error = null;
+
+  try {
+    const response = await fetch(`${baseUrl}/submission/download-file`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        Accept: 'application/octet-stream',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ path }),
+    });
+
+    if (!response.ok) throw new Error('Gagal download file');
+
+    // Ambil nama file dari header content-disposition
+    const contentDisposition = response.headers.get('Content-Disposition');
+    let filename = 'downloaded_file';
+
+    if (contentDisposition && contentDisposition.includes('filename=')) {
+      filename = contentDisposition.split('filename=')[1].replace(/['"]/g, '');
+    }
+
+    // Ambil blob dari response
+    const blob = await response.blob();
+
+    // Buat link dan download otomatis
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+
+    // Bersihkan link
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (err: any) {
+    this.error = err.message || 'Failed to download file';
+  } finally {
+    this.isLoading = false;
+  }
+}
+
 
     
   },
