@@ -4,15 +4,11 @@ export const navMenu: NavMenu[] = [
   {
     heading: 'General',
     items: [
-      {
-        title: 'Home',
-        icon: 'i-lucide-home',
-        link: '/',
-      },
+  
       {
         title: 'Conference',
         icon: 'i-lucide-layout-dashboard',
-        link: '/submission',
+        link: '/',
       },
       {
         title:'Journal',
