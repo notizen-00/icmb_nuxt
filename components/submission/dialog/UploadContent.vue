@@ -3,19 +3,13 @@
 import { toast } from 'vue3-toastify'
 import type { UserParticipant } from '~/interfaces/participant';
 
-
 const props = defineProps<{
-  participant: any
+    submission: any
 }>()
 
-console.log(props.participant)
 const dialogRef = ref(false)
 
 
-console.log(props.participant.id)
-const teamId = ref('')
-const amount = ref<number | null>(null)
-const note = ref('')
 const paymentFile = ref<File | null>(null)
 
 const { token } = useAuth()
@@ -34,14 +28,15 @@ async function handleSubmit() {
 
  isLoading.value = true;
   const formData = new FormData()
-  formData.append('participant_id', props.participant.id)
-  formData.append('note', note.value)
+  formData.append('type','other')
+  formData.append('submission_id',props.submission.id)
+  formData.append('team_id',props.submission.team_id)
   if (paymentFile.value) {
-    formData.append('payment_file', paymentFile.value)
+    formData.append('file', paymentFile.value)
   }
 
   try {
-    const response = await fetch(`${baseUrl}/payment`, {
+    const response = await fetch(`${baseUrl}/submission/upload-file`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -61,18 +56,16 @@ async function handleSubmit() {
     }
     isLoading.value = false;
 
-    toast.success('Payment uploaded successfully!')
+    toast.success('File uploaded successfully!')
     // Reset form
-    teamId.value = ''
-    amount.value = null
-    note.value = ''
+
 
     paymentFile.value = null
     dialogRef.value = false;
-    useSubmissionStore().fetchAbstract();
+    useSubmissionStore().fetchSubmissionDetail(props.submission.id);
   } catch (error: any) {
     console.error('Payment submission error:', error)
-    toast.error('Error submitting payment.')
+    toast.error('Error submitting file.')
     isLoading.value = false
   }
 }
@@ -87,49 +80,28 @@ async function handleSubmit() {
         class="ring-1 ring-blue-400 py-1 px-2 rounded-2 text-sm text-blue-500"
         @click="dialogRef = !dialogRef"
       >
-        <i class="fal fa-signal-stream text-blue-400"></i>
-        Upload Payment 
+        <i class="fal fa-file text-blue-400"></i>
+        Upload File 
       </button>
     </DialogTrigger>
     <DialogScrollContent class="sm:max-w-[700px] ">
       <DialogHeader>
-        <DialogTitle><i class="fal fa-credit-card fa-beat"></i> Submit Payment </DialogTitle>
+        <DialogTitle><i class="fal fa-credit-card fa-beat"></i> Submit File </DialogTitle>
         <DialogDescription>
           Make changes to your profile here. Click save when you're done.
         </DialogDescription>
-        <DialogClose @click="dialogRef = !dialogRef" class="text-red">Cancel Payment</DialogClose>
+        <DialogClose @click="dialogRef = !dialogRef" class="text-red">Cancel </DialogClose>
       </DialogHeader>
       <div class="grid gap-4 ">
        <form @submit.prevent="handleSubmit" class="grid gap-6 bg-zinc-900 p-6 rounded-xl shadow-md">
 
-  <!-- Select Team -->
-  <div>
-    <label class="block text-sm font-medium text-white mb-1">Conference</label>
-    {{ participant!.team.name  }}
-  </div>
-
-  <!-- Amount -->
-  <div>
-    <label class="block text-sm font-medium text-white mb-1">Amount</label>
-    {{ formatCurrency(participant!.conference_type.price) }}
-  </div>
-
-  <!-- Note -->
-  <div>
-    <label class="block text-sm font-medium text-white mb-1">Note (optional)</label>
-    <textarea
-      v-model="note"
-      rows="3"
-      class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    ></textarea>
-  </div>
 
   <!-- Upload File -->
   <div>
-    <label class="block text-sm font-medium text-white mb-1">Upload Payment File (jpg, png, pdf)</label>
+    <label class="block text-sm font-medium text-white mb-1">Upload Manuscript File (pdf,doc,docx)</label>
     <input
       type="file"
-      accept=".jpg,.jpeg,.png,.pdf"
+      accept=".docx,.pdf,.doc"
       required
       @change="onPaymentFileChange"
       class="block w-full text-sm text-white file:text-white file:bg-blue-700 file:border-0 file:px-4 file:py-2 file:rounded-lg file:cursor-pointer bg-black border border-gray-700 rounded-lg focus:outline-none"
@@ -142,7 +114,7 @@ async function handleSubmit() {
     type="submit"
     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg shadow-sm transition duration-150 ease-in-out"
   >
-   <i class="fal fa-refresh fa-spin" v-if="isLoading"></i> Submit Payment
+   <i class="fal fa-refresh fa-spin" v-if="isLoading"></i> Submit File
   </button>
 </form>
       </div>

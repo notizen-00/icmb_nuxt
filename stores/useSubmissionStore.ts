@@ -60,6 +60,9 @@ export const useSubmissionStore = defineStore('Submission', {
 
         if (error.value) throw new Error(error.value.message)
 
+        toast.success('Your submission has been retrieved!')
+        return data;
+
         // localStorage.setItem('Submission', JSON.stringify(this.Submission))
       } catch (err: any) {
         this.error = err.message || 'Failed to fetch Submissions'

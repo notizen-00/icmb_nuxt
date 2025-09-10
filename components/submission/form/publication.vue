@@ -60,7 +60,7 @@
 
       <button
         v-else
-        @click="submitForm"
+        @click.prevent="submitForm"
         class="ml-auto px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >
         Submit
@@ -77,7 +77,9 @@ import StepContributors from '@/components/submission/step/Contributors.vue'
 import StepEditors from '@/components/submission/step/Editors.vue'
 import StepReview from '@/components/submission/step/Review.vue'
 import { toast } from 'vue3-toastify'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const props = defineProps({
   submission: Object,
 })
@@ -177,6 +179,13 @@ const goToStep = (index) => {
 
 const submitForm = async () => {
   console.log('Final Form Data:', formData.value)
-  await submissionStore.doSubmission(submissionStore.detailSubmission?.submission?.id)
+  const response = await submissionStore.doSubmission(submissionStore.detailSubmission?.submission?.id)
+  if(response){
+    router.push('/journal')
+  }else{
+    toast.success('submit data success')
+    router.push('/journal')
+  }
+
 }
 </script>
