@@ -47,7 +47,7 @@
 
       <button
  
-        @click="nextStep"
+        @click.prevent="nextStep"
         :disabled="!canContinue"
         class="ml-auto px-4 py-2 rounded transition"
         :class="canContinue 
@@ -164,18 +164,65 @@ const saveForLater = async() =>{
     }
 
 }
-const nextStep =  () => {
-  if (!isStepValid(currentStep.value)) return
+const nextStep = async () => {
+  console.log('Current step sebelum:', currentStep.value)
 
-  // Step 0 needs saving before continuing
-    currentStep.value++
-  
+  if (!isStepValid(currentStep.value)) {
+    console.log('Step tidak valid, tetap di', currentStep.value)
+    return
+  }
+
+  if (currentStep.value === 0) {
+    // Jika title & abstract sudah ada, langsung lanjut tanpa update
+    const step0Data = formData.value[0]
+    const needUpdate = !step0Data.title?.trim() || !step0Data.abstract?.trim()
+
+    if (needUpdate) {
+      try {
+        const response = await submissionStore.updatePublication(step0Data)
+        console.log('Response updatePublication:', response)
+
+        if (response === 'success') {
+          await submissionStore.fetchSubmissionDetail(step0Data.submissionId)
+          toast.success('Sukses update step 0')
+          currentStep.value += 1
+          console.log('Step berubah ke:', currentStep.value)
+        } else {
+          toast.error('Gagal update step 0')
+        }
+      } catch (err) {
+        console.error('Error saat updatePublication:', err)
+        toast.error('Terjadi error saat update step 0')
+      }
+    } else {
+      // Langsung lanjut karena data sudah ada
+      currentStep.value += 1
+      console.log('Step sudah valid, langsung ke step:', currentStep.value)
+    }
+  } else {
+    currentStep.value += 1
+    console.log('Step berubah ke:', currentStep.value)
+  }
 }
+
+
+
 
 const goToStep = (index) => {
   if (index > currentStep.value && !isStepValid(currentStep.value)) return
   currentStep.value = index
 }
+watch(
+  () => submissionStore.detailSubmission?.submission,
+  (submission) => {
+    if (submission?.id) {
+      formData.value[0].submissionId = submission.id
+      formData.value[3].submissionId = submission.id
+      formData.value[2].contributors = submissionStore.detailSubmission?.contributors?.items || []
+    }
+  },
+  { immediate: true }
+)
 
 const submitForm = async () => {
   console.log('Final Form Data:', formData.value)
