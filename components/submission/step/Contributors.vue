@@ -31,6 +31,10 @@
           <span v-if="contributor.id == submissionStore.detailSubmission.submission_data.publications[0].primaryContactId" class="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">
             Primary Contact
           </span>
+
+          <span v-else @click="removeContributor(contributor.id)" class="text-xs cursor-pointer bg-red-600 text-white px-2 py-0.5 rounded">
+           <i class="fal fa-trash text-danger"></i> Delete
+          </span>
  
         </div>
       </div>
@@ -39,22 +43,51 @@
 </template>
 
 <script setup>
+
+import { toast } from 'vue3-toastify'
+
 const props = defineProps({
   modelValue: {
     type: Object,
     required: true,
   },
 })
-const submissionStore = useSubmissionStore();
-// props.modelValue.contributors = submissionStore.detailSubmission.contributors.items;
-const emit = defineEmits(['update:modelValue'])
-const submission = submissionStore.detailSubmission.submissions;
 
-const removeContributor = (index) => {
-  const contributors = [...props.modelValue.contributors]
-  contributors.splice(index, 1)
-  emit('update:modelValue', { ...props.modelValue, contributors })
-}
+const submissionStore = useSubmissionStore();
+const emit = defineEmits(['update:modelValue'])
+const submission = submissionStore.detailSubmission.submission;
+const removeContributor = async (id) => {
+  if (!confirm('Are you sure you want to delete this contributor?')) return;
+
+  try {
+    const { token } = useAuth()
+    const config = useRuntimeConfig()
+    const baseUrl = config.public.apiBaseUrl
+
+      const formData = new FormData()
+      formData.append('submission_id',submission.id)
+      formData.append('team_id',submission.team_id)
+      formData.append('contributor_id',id)
+
+
+    const response = await $fetch(`${baseUrl}/contributor/delete`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token.value}`,
+      },
+      body:formData
+    });
+
+    await submissionStore.fetchSubmissionDetail(submission.id);
+
+    toast.success('Contributor deleted successfully');
+  } catch (error) {
+    console.error('Failed to delete contributor:', error);
+    toast.error('Failed to delete contributor');
+  }
+};
+
 
 const editContributor = (index) => {
   alert('Edit contributor at index ' + index)

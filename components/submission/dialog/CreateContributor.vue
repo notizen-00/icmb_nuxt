@@ -12,12 +12,11 @@ const props = defineProps<{
 const dialogRef = ref(false)
 
 
-const prefered_name = ref('')
-const given_name = ref('')
+const last_name = ref('')
+const first_name = ref('')
 const email = ref('')
+const affiliation = ref('')
 const include_in_browse = ref(false)
-const paymentFile = ref<File | null>(null)
-
 const { token } = useAuth()
 const config = useRuntimeConfig()
 const baseUrl = config.public.apiBaseUrl
@@ -43,13 +42,18 @@ async function handleSubmit() {
 
  isLoading.value = true;
   const formData = new FormData()
-  formData.append('note', note.value)
-  if (paymentFile.value) {
-    formData.append('payment_file', paymentFile.value)
-  }
+  formData.append('given_name', first_name.value +' '+ last_name.value)
+  formData.append('email',email.value)
+  formData.append('include_in_browse',include_in_browse.value)
+  formData.append('country',selectedCountry.value)
+  formData.append('affiliation',affiliation.value)
+  formData.append('submission_id',props.submission.id)
+  formData.append('team_id',props.submission.team_id)
+
+  console.log(formData);
 
   try {
-    const response = await fetch(`${baseUrl}/payment`, {
+    const response = await fetch(`${baseUrl}/contributor`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -65,19 +69,21 @@ async function handleSubmit() {
         const messages = Object.values(result.errors).flat().join('\n')
         toast.error(messages)
       }
-      throw new Error(result.message || 'Failed to submit payment')
+      throw new Error(result.message || 'Failed to create payment')
     }
     isLoading.value = false;
 
-    toast.success('Payment uploaded successfully!')
+    toast.success('Add Contributor created successfully!')
+    await useSubmissionStore().fetchSubmissionDetail(props.submission.id);
     // Reset form
-    teamId.value = ''
-    amount.value = null
-    note.value = ''
-
-    paymentFile.value = null
+    email.value = ''
+    first_name.value = ''
+    last_name.value = ''
+    affiliation.value = ''
+    include_in_browse.value = false
+    selectedCountry.value = ''
     dialogRef.value = false;
-    useSubmissionStore().fetchAbstract();
+    
   } catch (error: any) {
     console.error('Payment submission error:', error)
     toast.error('Error submitting payment.')
@@ -119,7 +125,7 @@ async function handleSubmit() {
 
     type="text"
     required
-      v-model="given_name"
+      v-model="first_name"
       rows="3"
       class="w-full bg-black  text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:border-l-6 focus:border-red-300 focus:ring-blue-500"
     ></input>
@@ -127,10 +133,9 @@ async function handleSubmit() {
   <div>
     <label class="block text-sm font-medium text-white mb-1">Last Name </label>
     <input
-
     type="text"
     required
-      v-model="prefered_name"
+      v-model="last_name"
       rows="3"
       class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     ></input>
