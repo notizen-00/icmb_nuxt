@@ -7,8 +7,9 @@
     
     <div class="flex gap-2">
       <!-- <button class="border px-3 py-1 text-sm rounded hover:bg-gray-100">Order</button>
-      <button class="border px-3 py-1 text-sm rounded hover:bg-gray-100">Preview</button>
-      <button class="border px-3 py-1 text-sm rounded hover:bg-gray-100">Add Contributor</button> -->
+      <button class="border px-3 py-1 text-sm rounded hover:bg-gray-100">Preview</button> -->
+  
+      <SubmissionDialogCreateContributor :submission="submission"></SubmissionDialogCreateContributor>
     </div>
     <!-- {{ submissionStore.detailSubmission.contributors.items }} -->
 
@@ -47,6 +48,7 @@ const props = defineProps({
 const submissionStore = useSubmissionStore();
 // props.modelValue.contributors = submissionStore.detailSubmission.contributors.items;
 const emit = defineEmits(['update:modelValue'])
+const submission = submissionStore.detailSubmission.submissions;
 
 const removeContributor = (index) => {
   const contributors = [...props.modelValue.contributors]

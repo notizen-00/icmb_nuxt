@@ -15,12 +15,7 @@ export const navMenu: NavMenu[] = [
         icon:'i-lucide-file',
         link:'/journal'
       },
-      {
-        title: 'Payment',
-        icon: 'i-lucide-credit-card',
-        link: '/payment',
-        new: true,
-      },
+    
     ],
   },
   {
@@ -67,14 +62,5 @@ export const navMenu: NavMenu[] = [
 ]
 
 export const navMenuBottom: NavMenuItems = [
-  {
-    title: 'Help & Support',
-    icon: 'i-lucide-circle-help',
-    link: 'https://github.com/dianprata/nuxt-shadcn-dashboard',
-  },
-  {
-    title: 'Feedback',
-    icon: 'i-lucide-send',
-    link: 'https://github.com/dianprata/nuxt-shadcn-dashboard',
-  },
+ 
 ]

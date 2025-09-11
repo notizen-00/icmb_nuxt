@@ -8,8 +8,8 @@
       <label class="block text-sm font-medium">Comment For Editor  *</label>
 
         <p class="text-sm text-gray-600">
-    Add any information that you think our editorial staff should know when evaluating your submission.
-    </p>
+          Add any information that you think our editorial staff should know when evaluating your submission.
+        </p>
       <div class="min-h-[400px] max-h-[400px] overflow-y-auto border rounded p-2">
         <label class="block text-sm font-medium mb-2">Comment for the editors </label> 
         <textarea v-model="modelValue.commentsForTheEditors" class="w-full text-black dark:bg-black dark:text-white min-h-[200px]"/>

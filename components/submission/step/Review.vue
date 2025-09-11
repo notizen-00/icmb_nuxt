@@ -4,7 +4,7 @@
     <div class="border rounded">
       <div class="flex justify-between items-center border-b p-3 font-medium text-black bg-slate-100">
         <span>Details</span>
-        <button class="border px-3 py-1 rounded text-sm hover:bg-gray-100">Edit</button>
+        <!-- <button class="border px-3 py-1 rounded text-sm hover:bg-gray-100">Edit</button> -->
       </div>
       <div class="p-3 space-y-2 text-sm">
         <div>
@@ -33,7 +33,7 @@
     <div class="border rounded">
       <div class="flex justify-between items-center border-b p-3 font-medium text-black bg-slate-100">
         <span>Files</span>
-        <button class="border px-3 py-1 rounded text-sm hover:bg-gray-100">Edit</button>
+        <!-- <button class="border px-3 py-1 rounded text-sm hover:bg-gray-100">Edit</button> -->
       </div>
       <div class="p-3 space-y-2 text-sm">
         <div v-for="file in modelValue[1].files" :key="file.name.en" class="flex items-center justify-between">
@@ -49,7 +49,7 @@
     <div class="border rounded">
       <div class="flex justify-between items-center border-b p-3 font-medium text-black bg-slate-100">
         <span>Contributors</span>
-        <button class="border px-3 py-1 rounded text-sm hover:bg-gray-100">Edit</button>
+        <!-- <button class="border px-3 py-1 rounded text-sm hover:bg-gray-100">Edit</button> -->
       </div>
       <div class="p-3 space-y-2 text-sm">
         <div v-for="contributor in modelValue[2].contributors" :key="contributor.fullName" class="flex justify-between">
@@ -65,7 +65,7 @@
     <div class="border rounded">
       <div class="flex justify-between items-center border-b p-3 font-medium text-black bg-slate-100">
         <span>For the Editors</span>
-        <button class="border px-3 py-1 rounded text-sm hover:bg-gray-100">Edit</button>
+        <!-- <button class="border px-3 py-1 rounded text-sm hover:bg-gray-100">Edit</button> -->
       </div>
       <div class="p-3 text-sm text-gray-700">
    
