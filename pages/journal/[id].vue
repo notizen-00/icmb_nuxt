@@ -31,7 +31,6 @@
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-// import BaseBadgeStatus from '@/components/BaseBadgeStatus.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -41,6 +40,7 @@ const journalId = route.params.id as string
 
 onMounted(async()=>{
     await submissionStore.fetchSubmissionDetail(journalId)
+    await useDiscussionStore().fetchDetail(journalId)
 })
 
 </script>

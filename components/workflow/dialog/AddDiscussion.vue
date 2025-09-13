@@ -17,7 +17,7 @@
 
         <div>
           <label class="block font-medium mb-1">Description</label>
-          <textarea v-model="form.description" rows="3" required
+          <textarea v-model="form.description" rows="3" 
                     class="w-full border rounded px-3 py-2 bg-gray-50 dark:bg-gray-700 text-black dark:text-white"></textarea>
         </div>
 

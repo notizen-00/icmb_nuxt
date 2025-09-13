@@ -346,9 +346,10 @@ export const useSubmissionStore = defineStore('Submission', {
     });
 
     if (!response.ok) throw new Error('Gagal download file');
-
+    console.log(response.blob);
     // Ambil nama file dari header content-disposition
     const contentDisposition = response.headers.get('Content-Disposition');
+    console.log(contentDisposition);
     let filename = 'downloaded_file';
 
     if (contentDisposition && contentDisposition.includes('filename=')) {
@@ -358,7 +359,7 @@ export const useSubmissionStore = defineStore('Submission', {
     // Ambil blob dari response
     const blob = await response.blob();
 
-    // Buat link dan download otomatis
+    // // Buat link dan download otomatis
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
