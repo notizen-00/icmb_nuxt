@@ -23,7 +23,9 @@
         :is="steps[currentStep].component"
         v-bind="{
           modelValue: currentStep === 4 ? formData : formData[currentStep],
+          
         }"
+        @goToStep="goToStep"
         @update:modelValue="(val) => formData[currentStep] = val"
       />
     </div>
@@ -46,7 +48,6 @@
 
 
       <button
- 
         @click.prevent="nextStep"
         :disabled="!canContinue"
         class="ml-auto px-4 py-2 rounded transition"

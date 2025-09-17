@@ -8,10 +8,10 @@ const props = defineProps<{
 }>()
 
 const dialogRef = ref(false)
-
+const emit = defineEmits(['fileUploaded'])
 
 const paymentFile = ref<File | null>(null)
-
+const submissionStore = useSubmissionStore();
 const { token } = useAuth()
 const config = useRuntimeConfig()
 const baseUrl = config.public.apiBaseUrl
@@ -62,7 +62,12 @@ async function handleSubmit() {
 
     paymentFile.value = null
     dialogRef.value = false;
-    useSubmissionStore().fetchSubmissionDetail(props.submission.id);
+    await submissionStore.fetchSubmissionDetail(props.submission.id);
+
+    const newFiles = submissionStore.detailSubmission?.submission_files?.items ?? []
+
+
+    emit('fileUploaded', newFiles)
   } catch (error: any) {
     console.error('Payment submission error:', error)
     toast.error('Error submitting file.')

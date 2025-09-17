@@ -10,6 +10,7 @@ export const useSubmissionStore = defineStore('Submission', {
     listSubmission:[] as any,
     participant:[] as any,
     isLoading: false,
+    step:0,
     isLoadingAbstract:false,
     isDialogRevision:false,
     isDialogAbstract:false,
@@ -17,6 +18,14 @@ export const useSubmissionStore = defineStore('Submission', {
   }),
 
   actions: {
+    addStep()
+    {
+      console.log('kamu di step ')
+      this.step ++;
+    },
+    setStep(val:any){
+      this.step = val;
+    },
     loadFromCache() {
       const cached = localStorage.getItem('Submission')
       if (cached) {

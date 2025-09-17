@@ -1,11 +1,11 @@
 <template>
 
     
-  <div v-if="submissionStore.isLoading" class="flex justify-center items-center flex-col h-100">
+  <!-- <div v-if="submissionStore.isLoading" class="flex justify-center items-center flex-col h-100">
     <i class="fal fa-refresh fa-spin"></i> Loading...
-  </div>
+  </div> -->
 
-  <div v-else-if="!submissionStore.detailSubmission?.submission">
+  <div v-if="!submissionStore.detailSubmission?.submission">
     <div class="text-center mt-10">
       <h2 class="text-2xl font-bold">404 - Submission Not Found</h2>
       <p class="text-gray-600 mt-2">The requested submission doesn't exist or has been removed.</p>

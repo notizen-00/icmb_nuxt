@@ -21,11 +21,11 @@
           </a>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-xs bg-gray-100 border w-full text-black rounded px-2 py-0.5">
+          <span @click.prevent="addFile" class="text-xs bg-gray-100 border w-full text-black rounded px-2 py-0.5">
             {{ file?.genreName?.en || 'Unknown genre' }}
           </span>
-          <button class="text-xs text-blue-500 hover:underline" @click.prevent="editFile(index)">Edit</button>
-          <button class="text-xs text-pink-500 hover:underline" @click.prevent="removeFile(index)">Remove</button>
+  
+          <button class="text-xs text-pink-500 hover:underline" @click.prevent="removeFile(index,file)">Remove</button>
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
     </div>
 
     <div>
-    <SubmissionDialogUploadContent :submission="submission" />
+    <SubmissionDialogUploadContent :submission="submission" @fileUploaded="updateFiles" />
 
     </div>
   </div>
@@ -46,7 +46,7 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue'
 import { FileIcon } from 'lucide-vue-next'
-
+import { toast } from 'vue3-toastify'
 
 const props = defineProps({
   modelValue: {
@@ -54,7 +54,7 @@ const props = defineProps({
     required: true,
   },
 })
-
+const emit = defineEmits(['update:modelValue', 'goToStep'])
 onMounted(() => {
   if (!files.value?.length && submissionStore.detailSubmission?.submission_files?.items) {
     files.value = submissionStore.detailSubmission.submission_files.items
@@ -74,19 +74,51 @@ props.modelValue.files = submissionStore.detailSubmission?.submission_files?.ite
 const submission = submissionStore.detailSubmission.submission
 console.log(submissionStore.detailSubmission.submission)
 
-const emit = defineEmits(['update:modelValue'])
 
-const removeFile = (index) => {
-  const files = [...props.modelValue.files]
-  files.splice(index, 1)
-  emit('update:modelValue', { ...props.modelValue, files })
+
+const removeFile = async (index, file) => {
+  console.log(file)
+  const config = useRuntimeConfig()
+      const baseUrl = config.public.apiBaseUrl
+      const { token } = useAuth()
+  try {
+    await $fetch(`${baseUrl}/submission/file/delete`, {
+      method: 'POST',
+      body: {
+        submission_file_id: file.id,    
+        stageId: 4,          
+        submission_id: submission.id,
+        team_id: submission.team_id,
+      },
+      headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token.value}` 
+        },
+    })
+
+    const files = [...props.modelValue.files]
+    files.splice(index, 1)
+    emit('update:modelValue', { ...props.modelValue, files })
+    submissionStore.fetchSubmissionDetail(submission.id)
+    emit('goToStep', 1) 
+
+    toast.success('File deleted successfully')
+
+  } catch (error) {
+    console.error('Failed to delete file:', error)
+    toast.error('Gagal menghapus file, coba lagi.')
+  }
 }
 
 const addFile = () => {
-
+  emit('goToStep', 2) 
 }
 
 const editFile = (index) => {
   alert('Edit File at index ' + index)
+}
+
+function updateFiles(newFiles) {
+  files.value = newFiles
 }
 </script>
