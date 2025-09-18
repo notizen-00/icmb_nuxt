@@ -56,6 +56,7 @@ export default defineNuxtConfig({
         login: '/login', 
         logout: '/', 
       },
+      
     // token: {
     //     signInResponseTokenPointer: '/token',
     //     type: 'Bearer',
