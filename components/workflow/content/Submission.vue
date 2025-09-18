@@ -14,7 +14,7 @@
 
       <!-- {{ file }} -->
         <a
-          class="text-blue-600 underline"
+          class="text-blue-600 underline cursor-pointer"
           target="_blank"
           @click="submissionStore.downloadFile(file.path)"
         >

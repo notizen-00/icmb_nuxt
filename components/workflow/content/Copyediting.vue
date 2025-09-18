@@ -88,7 +88,7 @@ const {data} = useAuth()
               </div>
               <div v-else>
                  <button class="mr-2"><i class="fal fa-eye text-blue-200"></i></button>
-                <button><i class="fal fa-paper-plane text-blue-400"></i></button>
+                <button @click="discussionStore.toggleDialogNote(data.id)"><i class="fal fa-paper-plane text-blue-400"></i></button>
                 
               </div>
             </td>
@@ -116,7 +116,8 @@ const {data} = useAuth()
         class="flex items-center justify-between p-3"
       >
         <a
-          class="text-blue-600 underline"
+          class="text-blue-600 cursor-pointer
+           underline"
           target="_blank"
           @click="submissionStore.downloadFile(file.path)"
         >
@@ -150,6 +151,16 @@ const {data} = useAuth()
     :submissionId="submission.id"
     :teamId="submission.team_id"
     stage="review"
+    @close="showModal = false"
+    @submitted="onDiscussionAdded"
+  />
+
+
+  <WorkflowDialogAddNote
+    v-if="discussionStore.isDialogNote"
+    :submissionId="submission.id"
+    :teamId="submission.team_id"
+    stage="copyediting"
     @close="showModal = false"
     @submitted="onDiscussionAdded"
   />

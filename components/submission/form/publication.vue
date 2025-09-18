@@ -177,7 +177,7 @@ const nextStep = async () => {
     // Jika title & abstract sudah ada, langsung lanjut tanpa update
     const step0Data = formData.value[0]
     const needUpdate = !step0Data.title?.trim() || !step0Data.abstract?.trim()
-
+    const response = await submissionStore.updatePublication(step0Data)
     if (needUpdate) {
       try {
         const response = await submissionStore.updatePublication(step0Data)
@@ -197,6 +197,8 @@ const nextStep = async () => {
       }
     } else {
       // Langsung lanjut karena data sudah ada
+       const response = await submissionStore.updatePublication(step0Data)
+        await submissionStore.fetchSubmissionDetail(step0Data.submissionId)
       currentStep.value += 1
       console.log('Step sudah valid, langsung ke step:', currentStep.value)
     }

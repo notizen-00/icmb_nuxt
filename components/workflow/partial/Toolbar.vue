@@ -25,7 +25,7 @@
       
       <Tooltip>
         <TooltipTrigger as-child>
-          <Button @click="useSubmissionStore().fetchSubmission()" variant="ghost" size="icon" >
+          <Button @click="useSubmissionStore().fetchSubmissionDetail(route.params.id)" variant="ghost" size="icon" >
             <i class="fal fa-refresh"></i>
             <span class="sr-only">Reply</span>
           </Button>
@@ -78,6 +78,10 @@ const props = defineProps({
 })
 
 console.log(props);
+const route = useRoute()
+
+
+
 
 const router = useRouter()
 const today = new Date()
