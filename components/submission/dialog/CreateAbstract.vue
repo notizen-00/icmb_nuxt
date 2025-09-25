@@ -182,16 +182,16 @@ isLoading.value = true;
           <DialogClose @click="dialogRef = !dialogRef" class="text-red">Cancel Join Conference</DialogClose>
       </DialogHeader>
       <div class="grid gap-4 ">
-        <form @submit.prevent="handleSubmit" class="grid gap-6 bg-zinc-900 p-6 rounded-xl shadow-md">
+        <form @submit.prevent="handleSubmit" class="grid gap-6 bg-gray-200 dark:bg-zinc-900 p-6 rounded-xl shadow-md">
           <!-- Participation -->
 
           <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Conference 
             </label>
             <select
               v-model="teamId"
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option disabled value="">Select a conference </option>
               <option
@@ -205,13 +205,13 @@ isLoading.value = true;
           </div>
            
            <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Origin Of Participant
             </label>
            <select
               v-model="originParticipation"
             
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option disabled value="">Select origin of participation </option>
               <option value="indonesia"
@@ -224,13 +224,13 @@ isLoading.value = true;
             </select>
           </div>
            <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Form of Participation
             </label>
             <select
               v-model="formParticipation"
             
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option disabled value="">Select a participation </option>
               <option value="offline"
@@ -243,14 +243,14 @@ isLoading.value = true;
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Conference Participation
             </label>
             <select
               v-model="conferenceType"
                 :disabled="!conferenceTypeList.length"
                 :class="!conferenceTypeList.length ? 'cursor-not-allowed':''"
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option disabled value="">Select a conference participation type</option>
               <option
@@ -266,104 +266,104 @@ isLoading.value = true;
           <!-- Title -->
           <template v-if="selectedConferenceType.type_participant == 'presenter' ">
           <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Manuscript Title
             </label>
             <input
               v-model="title"
               type="text"
               placeholder="Please write the title in sentence case style."
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <!-- Email & Author -->
           <div class="grid md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-white mb-1">
+              <label class="block text-sm font-medium text-black dark:text-white mb-1">
                 Corresponding E-mail
               </label>
               <input
                 v-model="email"
                 type="email"
                 placeholder="Please use valid email !"
-                class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-white mb-1">
+              <label class="block text-sm font-medium text-black dark:text-white mb-1">
                 Corresponding Author
               </label>
               <input
                 v-model="correspondingAuthor"
                 type="text"
-                class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
-           <label class="block text-sm font-medium text-white mb-1">
+           <label class="block text-sm font-medium text-black dark:text-white mb-1">
             Authors
             </label>
           <BaseMultiInput v-model="authors"></BaseMultiInput>
-          <span class="text-xs text-slate-300">Please write down the full name of each author, use a semicolon (;) between names for a manuscript with multiple authors.</span>
+          <span class="text-xs text-black dark:text-slate-200">Please write down the full name of each author, use a semicolon (;) between names for a manuscript with multiple authors.</span>
 
           <!-- Affiliation -->
           <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Affiliation
             </label>
             <input
               v-model="affiliation"
               type="text"
               placeholder="Include code numbers to match authors above"
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p class="text-xs text-gray-400 mt-1">
+            <p class="text-xs text-black dark:text-slate-200 mt-1">
               Give a code number to the different affiliates...
             </p>
           </div>
 
           <!-- Contact -->
           <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Contact (WhatsApp installed)
             </label>
             <input
               v-model="contact"
               type="text"
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <!-- Manuscript Upload -->
           <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Manuscript
             </label>
             <input
               type="file"
               accept=".doc,.docx"
               @change="onFileChange"
-              class="block w-full text-sm text-white file:text-white file:bg-blue-700 file:border-0 file:px-4 file:py-2 file:rounded-lg file:cursor-pointer bg-black border border-gray-700 rounded-lg focus:outline-none"
+              class="block w-full text-sm text-black dark:text-white file:text-white file:bg-blue-700 file:border-0 file:px-4 file:py-2 file:rounded-lg file:cursor-pointer bg-gray-200 dark:bg-black border border-gray-700 rounded-lg focus:outline-none"
             />
-            <p class="text-xs text-gray-400 mt-1">
+            <p class="text-xs text-black dark:text-slate-200 mt-1">
               Upload manuscript in Word format (.doc / .docx)
             </p>
           </div>
            <div>
-           <p class="text-xs text-slate-200">  <Checkbox required class="mr-3"></Checkbox> By clicking the submit button below, I hereby agree to and accept the terms and conditions governing the process of conference, manuscript review, and full-paper publication. I further reaffirm my acceptance of the terms and conditions governing the options of publication. I am aware that there may be another APC to be paid if I agree to publish my paper in the International Indexed Proceeding or the conference-affiliated journals.</p>
+           <p class="text-xs text-black dark:text-slate-200">  <Checkbox required class="mr-3"></Checkbox> By clicking the submit button below, I hereby agree to and accept the terms and conditions governing the process of conference, manuscript review, and full-paper publication. I further reaffirm my acceptance of the terms and conditions governing the options of publication. I am aware that there may be another APC to be paid if I agree to publish my paper in the International Indexed Proceeding or the conference-affiliated journals.</p>
           </div>
 
           <template v-if="selectedConferenceType.is_referal == true">
               <div>
-            <label class="block text-sm font-medium text-white mb-1">
+            <label class="block text-sm font-medium text-black dark:text-white mb-1">
               Referal Code (use a valid referal code)
             </label>
             <input
               v-model="referalCode"
               type="text"
-              class="w-full bg-black text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-200 dark:bg-black text-black dark:text-white border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           </template>
