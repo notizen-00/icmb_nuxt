@@ -45,7 +45,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-
+import { toast } from 'vue3-toastify'
 const props = defineProps({
   submissionId: { type: Number, required: true },
   teamId: { type: Number, required: true },
@@ -79,8 +79,13 @@ async function submitRevision() {
     console.log(form)
      const formData = new FormData()
     formData.append('type', form.type)
+    formData.append('submission_id',props.submissionId)
+    formData.append('team_id',props.teamId)
     formData.append('file', form.file)
     await submissionStore.uploadRevisi(formData)
+    submissionStore.toggleDialogRevision();
+    toast.success('File Revision success uploaded')
+    await submissionStore.fetchSubmissionDetail(props.submissionId)
   } catch (e) {
     console.log(e)
     error.value = e.message || 'Failed to upload file'

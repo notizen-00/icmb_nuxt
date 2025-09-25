@@ -26,9 +26,10 @@ export const useDiscussionStore = defineStore('Discussion', {
         this.isDialog = !this.isDialog
     },
 
-     toggleDialogNote()
+     toggleDialogNote(id:any)
     {
         this.isDialogNote = !this.isDialogNote
+    
     },
 
    async create(form:any){
