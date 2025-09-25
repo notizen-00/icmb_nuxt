@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr:true,
-   runtimeConfig: {
+  runtimeConfig: {
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api',
       BaseUrl: process.env.NUXT_ASSET_BASE_URL || 'http://localhost/storage/images/',
@@ -56,6 +56,7 @@ export default defineNuxtConfig({
         login: '/login', 
         logout: '/', 
       },
+      
     // token: {
     //     signInResponseTokenPointer: '/token',
     //     type: 'Bearer',
