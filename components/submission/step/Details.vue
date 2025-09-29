@@ -3,7 +3,7 @@
     <h3 class="text-lg font-semibold">Submission Details</h3>
 
     <div class="space-y-2">
-      <label class="block text-sm font-medium">Title *</label>
+      <label class="block text-sm font-medium">Title <span class="text-red-500">*</span></label>
       <input
         v-model="modelValue.title"
         type="text"
@@ -13,7 +13,7 @@
     </div>
 
     <div class="space-y-2">
-      <label class="block text-sm font-medium">Keywords</label>
+      <label class="block text-sm font-medium">Keywords <span class="text-red-500">*</span></label>
       <input
         v-model="modelValue.keywords"
         type="text"
@@ -26,7 +26,7 @@
     <span class="text-gray-400">Loading...</span>
 </div>
 <div v-else class="min-h-[400px] max-h-[400px] overflow-y-auto border rounded p-2">
-  <label class="block text-sm font-medium mb-2">Abstract</label> 
+  <label class="block text-sm font-medium mb-2">Abstract <span class="text-red-500">*</span></label> 
   <textarea v-model="modelValue.abstract" class="w-full dark:bg-black dark:text-white focus-ring focus-ring-red-300 text-black min-h-[200px]"/>
 
 
